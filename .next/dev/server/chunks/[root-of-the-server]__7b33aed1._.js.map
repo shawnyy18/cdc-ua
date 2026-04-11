@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 46, "column": 0}, "map": {"version":3,"sources":["file:///Users/shawnashlee/Desktop/Startup-CDC-Only/app/api/debug-donations/route.ts"],"sourcesContent":["import { NextRequest, NextResponse } from 'next/server';\nimport { createClient } from '@supabase/supabase-js';\n\nexport const runtime = 'nodejs';\n\nexport async function GET(request: NextRequest) {\n  try {\n    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;\n    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;\n    const adminClient = createClient(supabaseUrl, serviceKey);\n\n    const { data, error } = await adminClient\n      .from('donations')\n      .select('*')\n      .order('created_at', { ascending: false })\n      .limit(3);\n\n    return NextResponse.json({ data, error });\n  } catch (err: any) {\n    return NextResponse.json({ error: err.message });\n  }\n}\n"],"names":[],"mappings":";;;;;;AAAA;AACA;;;AAEO,MAAM,UAAU;AAEhB,eAAe,IAAI,OAAoB;IAC5C,IAAI;QACF,MAAM;QACN,MAAM,aAAa,QAAQ,GAAG,CAAC,yBAAyB;QACxD,MAAM,cAAc,IAAA,gMAAY,EAAC,aAAa;QAE9C,MAAM,EAAE,IAAI,EAAE,KAAK,EAAE,GAAG,MAAM,YAC3B,IAAI,CAAC,aACL,MAAM,CAAC,KACP,KAAK,CAAC,cAAc;YAAE,WAAW;QAAM,GACvC,KAAK,CAAC;QAET,OAAO,gJAAY,CAAC,IAAI,CAAC;YAAE;YAAM;QAAM;IACzC,EAAE,OAAO,KAAU;QACjB,OAAO,gJAAY,CAAC,IAAI,CAAC;YAAE,OAAO,IAAI,OAAO;QAAC;IAChD;AACF"}}]
+}

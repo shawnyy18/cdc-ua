@@ -1,0 +1,39 @@
+%% EcoKonek Technology Stack
+flowchart LR
+    subgraph Frontend
+        A1[Next.js 16]
+        A2[React 18]
+        A3[TypeScript]
+        A4[Tailwind CSS]
+    end
+
+    subgraph Backend
+        B1[Node.js Serverless Functions]
+        B2[API Routes]
+        B3[Edge Runtime Ready]
+    end
+
+    subgraph Database
+        C1[Supabase PostgreSQL]
+        C2[Row Level Security]
+        C3[Realtime Subscriptions]
+        C4[Storage Buckets]
+    end
+
+    subgraph AI/ML
+        D1[Google Generative AI]
+        D2[Gemini 1.5 Flash/Pro]
+    end
+
+    subgraph Deployment
+        E1[Vercel Platform]
+        E2[Serverless Functions]
+        E3[Edge Network CDN]
+        E4[Auto SSL/HTTPS]
+    end
+
+    Frontend --> Backend
+    Backend --> Database
+    Backend --> AI/ML
+    Frontend --> Deployment
+    Backend --> Deployment

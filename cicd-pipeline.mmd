@@ -1,0 +1,22 @@
+%% EcoKonek CI/CD Deployment Pipeline
+flowchart LR
+    A[Git Push to main] --> B[GitHub Webhook]
+    B --> C[Vercel Build Trigger]
+    C --> D[Install Dependencies<br/>npm install]
+    D --> E[Type Check<br/>tsc --noEmit]
+    E --> F[Build Next.js<br/>next build]
+    F --> G[Deploy to Edge Network]
+    G --> H[Run Health Checks]
+    H --> I{Tests Pass?}
+    
+    I -->|Yes| J[Promote to Production]
+    I -->|No| K[Rollback to Previous]
+    
+    J --> L[Update DNS]
+    L --> M[Issue SSL Certificate]
+    M --> N[Live on Custom Domain]
+    
+    style A fill:#4ade80
+    style J fill:#10b981
+    style K fill:#ef4444
+    style N fill:#3b82f6

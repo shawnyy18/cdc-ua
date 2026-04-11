@@ -1,0 +1,117 @@
+graph TB
+    %% --- Style Definitions ---
+    classDef frontend fill:#3b82f6,stroke:#1e40af,stroke-width:3px,color:#fff
+    classDef backend fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
+    classDef database fill:#8b5cf6,stroke:#6d28d9,stroke-width:3px,color:#fff
+    classDef external fill:#f59e0b,stroke:#d97706,stroke-width:3px,color:#fff
+    classDef security fill:#ef4444,stroke:#dc2626,stroke-width:3px,color:#fff
+    classDef infra fill:#6b7280,stroke:#374151,stroke-width:3px,color:#fff
+
+    %% --- Client Layer ---
+    subgraph Client["Client Layer"]
+        Browser["Web Browser<br/>Chrome, Safari, Firefox"]:::frontend
+        Mobile["Mobile Browser<br/>iOS, Android"]:::frontend
+    end
+
+    %% --- CDN & Edge ---
+    subgraph Edge["Edge Network"]
+        CDN["Vercel Edge CDN<br/>Global Distribution"]:::infra
+        SSL["SSL/TLS Encryption<br/>HTTPS"]:::security
+    end
+
+    %% --- Application Layer ---
+    subgraph Application["Application Layer - Next.js 16"]
+        Frontend["Frontend Components<br/>React 18, TypeScript"]:::frontend
+        Pages["Pages & Routing<br/>Dashboard, Donate, Community, Profile"]:::frontend
+        
+        subgraph API["API Routes - Serverless Functions"]
+            ChatbotAPI["Chatbot API<br/>AI Assistant"]:::backend
+            AuthAPI["Auth Handler<br/>Authentication"]:::backend
+            DonationAPI["Donation Handler<br/>Donations CRUD"]:::backend
+            CommunityAPI["Community Handler<br/>Posts & Social"]:::backend
+            ProfileAPI["User Profile<br/>User Management"]:::backend
+        end
+    end
+
+    %% --- Database Layer ---
+    subgraph Database["Database Layer - Supabase"]
+        PostgreSQL[("PostgreSQL 15<br/>Relational Database")]:::database
+        
+        subgraph Tables["Database Tables"]
+            UsersTable["users<br/>Profiles & Stats"]:::database
+            DonationsTable["donations<br/>Device Submissions"]:::database
+            CommunityTable["community_posts<br/>Social Feed"]:::database
+            MarketTable["marketplace_items<br/>Listings"]:::database
+        end
+        
+        RLS["Row Level Security<br/>auth.uid Policy Enforcement"]:::security
+        Triggers["Database Triggers<br/>Auto-calculate Eco Impact"]:::backend
+    end
+
+    %% --- External Services ---
+    subgraph External["External Services"]
+        GoogleAI["Google Generative AI<br/>Gemini 1.5 Flash/Pro"]:::external
+        SupabaseAuth["Supabase Auth<br/>JWT Tokens, Magic Links"]:::external
+        Storage["Supabase Storage<br/>Images & Files"]:::external
+    end
+
+    %% --- Security Layer ---
+    subgraph Security["Security & Authentication"]
+        JWT["JWT Token Validation<br/>Bearer Authentication"]:::security
+        SessionMgmt["Session Management<br/>localStorage"]:::security
+        CORS["CORS Configuration<br/>Origin Validation"]:::security
+    end
+
+    %% --- Infrastructure ---
+    subgraph Infrastructure["Deployment Infrastructure"]
+        Vercel["Vercel Platform<br/>Serverless Hosting"]:::infra
+        GitHub["GitHub Repository<br/>Version Control & CI/CD"]:::infra
+        Monitoring["Monitoring & Logs<br/>Vercel Analytics, Supabase Logs"]:::infra
+    end
+
+    %% --- Connections ---
+    Browser --> CDN
+    Mobile --> CDN
+    CDN --> SSL
+    SSL --> Frontend
+    
+    Frontend --> Pages
+    Pages --> API
+    
+    API --> ChatbotAPI
+    API --> AuthAPI
+    API --> DonationAPI
+    API --> CommunityAPI
+    API --> ProfileAPI
+    
+    ChatbotAPI --> GoogleAI
+    AuthAPI --> SupabaseAuth
+    AuthAPI --> JWT
+    
+    DonationAPI --> PostgreSQL
+    CommunityAPI --> PostgreSQL
+    ProfileAPI --> PostgreSQL
+    
+    PostgreSQL --> Tables
+    Tables --> UsersTable
+    Tables --> DonationsTable
+    Tables --> CommunityTable
+    Tables --> MarketTable
+    
+    PostgreSQL --> RLS
+    PostgreSQL --> Triggers
+    
+    RLS --> JWT
+    SessionMgmt --> JWT
+    
+    Frontend --> SessionMgmt
+    API --> CORS
+    
+    Storage -.-> Frontend
+    SupabaseAuth -.-> SessionMgmt
+    
+    Vercel -.-> CDN
+    Vercel -.-> API
+    GitHub -.-> Vercel
+    Monitoring -.-> Vercel
+    Monitoring -.-> PostgreSQL

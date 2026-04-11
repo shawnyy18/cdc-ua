@@ -1,0 +1,3 @@
+{
+  "/api/supabase/functions/community-handler/route": "app/api/supabase/functions/community-handler/route.js"
+}

@@ -1,0 +1,72 @@
+flowchart TD
+    %% --- Style Definitions ---
+    classDef process fill:#10b981,stroke:#333,stroke-width:2px,color:#fff
+    classDef decision fill:#3b82f6,stroke:#333,stroke-width:2px,color:#fff
+    classDef data fill:#6b7280,stroke:#333,stroke-width:2px,color:#fff
+    classDef external fill:#f97316,stroke:#333,stroke-width:2px,color:#fff
+    classDef startend fill:#fff,stroke:#10b981,stroke-width:4px
+    classDef interaction fill:#a78bfa,stroke:#333,stroke-width:2px,color:#fff
+    classDef success fill:#34d399,stroke:#333,stroke-width:2px,color:#fff
+    classDef error fill:#ef4444,stroke:#333,stroke-width:2px,color:#fff
+
+    %% --- User Journey ---
+    Start([User Login]):::startend
+    Start --> Dashboard[User Dashboard]:::process
+    
+    %% --- Dashboard Options ---
+    Dashboard --> NavChoice{Choose Action}:::decision
+    NavChoice --> |Donate Device| NavDonate[Navigate to Donate Page]:::process
+    NavChoice --> |View Status| ViewHistory[View Donation History]:::process
+    NavChoice --> |Check Stats| ViewStats[View Eco Stats]:::process
+    NavChoice --> |Community| NavCommunity[Browse Community]:::process
+    
+    %% --- Simplified Donation Flow ---
+    NavDonate --> FillForm[Fill Donation Form<br/>Device Type, Condition, Drop-off Center]:::interaction
+    FillForm --> ReviewSubmit[Review Details]:::process
+    ReviewSubmit --> SubmitBtn{Confirm Submit?}:::decision
+    SubmitBtn --> |Cancel| NavDonate
+    SubmitBtn --> |Submit| ProcessSubmit[Submit Donation]:::process
+    
+    %% --- Backend Processing ---
+    ProcessSubmit --> ValidateAuth{User Authenticated?}:::decision
+    ValidateAuth --> |No| ErrorAuth[Show Login Required]:::error
+    ValidateAuth --> |Yes| CreateDonation[Create Donation Record]:::process
+    
+    ErrorAuth --> Start
+    
+    CreateDonation --> SetStatus[Status: Pending]:::data
+    SetStatus --> CalcImpact[Calculate Eco Impact]:::external
+    CalcImpact --> SaveDB[(Save to Database)]:::data
+    SaveDB --> ShowSuccess[Show Success + Expected Impact]:::success
+    ShowSuccess --> Dashboard
+    
+    %% --- View Donation History ---
+    ViewHistory --> FetchDonations[(Fetch User Donations)]:::data
+    FetchDonations --> DisplayList[Display Donation List with Status Badges]:::process
+    DisplayList --> Dashboard
+    
+    %% --- Admin Review (Parallel Process) ---
+    SaveDB -.-> AdminQueue[Admin Review Queue]:::external
+    AdminQueue -.-> AdminReview{Admin Decision}:::decision
+    AdminReview -.-> |Accept| AcceptDonation[Accept: Award Points & CO₂]:::success
+    AdminReview -.-> |Reject| RejectDonation[Reject Donation]:::error
+    
+    AcceptDonation -.-> NotifyUser[Notify User]:::interaction
+    RejectDonation -.-> NotifyUser
+    
+    %% --- View Stats ---
+    ViewStats --> FetchStats[(Get User Stats)]:::data
+    FetchStats --> DisplayStats[Show Eco-Points, CO₂ Saved, Rank]:::success
+    DisplayStats --> Dashboard
+    
+    %% --- Community Flow ---
+    NavCommunity --> BrowsePosts[Browse Community Feed]:::process
+    BrowsePosts --> PostAction{User Action}:::decision
+    PostAction --> |Like| LikePost[Like Post]:::interaction
+    PostAction --> |Create| CreatePost[Create Post]:::process
+    PostAction --> |View Profile| ViewProfile[View User Profile]:::process
+    
+    LikePost --> BrowsePosts
+    CreatePost --> BrowsePosts
+    ViewProfile --> BrowsePosts
+    BrowsePosts --> Dashboard

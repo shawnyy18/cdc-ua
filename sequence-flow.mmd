@@ -1,0 +1,41 @@
+%% EcoKonek - Detailed Request Flow with Authentication & RLS
+sequenceDiagram
+    participant User
+    participant Vercel as Vercel Edge/CDN
+    participant NextJS as Next.js App
+    participant API as Serverless API Routes
+    participant Supabase as Supabase PostgreSQL
+    participant RLS as Row Level Security
+    participant Gemini as Google Gemini AI
+    participant Auth as Supabase Auth
+
+    User->>Vercel: Request Page (HTTPS)
+    Vercel->>NextJS: Serve Static/SSR Content
+    NextJS->>User: Render UI
+
+    User->>NextJS: Interact (Login/Donate/Post)
+    NextJS->>API: API Request + JWT Token
+    
+    alt Authentication Required
+        API->>Auth: Verify JWT Token
+        Auth->>API: Token Valid/Invalid
+    end
+
+    API->>Supabase: Database Query
+    Supabase->>RLS: Check RLS Policies
+    RLS->>RLS: Validate auth.uid() = user_id
+    
+    alt RLS Pass
+        RLS->>Supabase: Allow Access
+        Supabase->>API: Return Data
+    else RLS Fail
+        RLS->>API: Return 403/Error
+    end
+
+    alt Chatbot Request
+        API->>Gemini: Send Prompt
+        Gemini->>API: AI Response
+    end
+
+    API->>NextJS: JSON Response
+    NextJS->>User: Update UI

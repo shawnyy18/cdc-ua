@@ -1,0 +1,93 @@
+%% EcoKonek Deployment Architecture - Main Diagram
+graph TB
+    subgraph "Client Layer"
+        A[Web Browser]
+        B[Mobile Browser]
+    end
+
+    subgraph "CDN & Edge Network"
+        C[Vercel Edge Network]
+        D[Global CDN]
+    end
+
+    subgraph "Application Layer - Vercel Serverless"
+        E[Next.js 16 Frontend]
+        F[Static Assets]
+        
+        subgraph "API Routes - Node.js Serverless Functions"
+            G[/api/chatbot]
+            H[/api/supabase/functions/auth-handler]
+            I[/api/supabase/functions/community-handler]
+            J[/api/supabase/functions/donation-handler]
+            K[/api/supabase/functions/user-profile]
+        end
+    end
+
+    subgraph "Database Layer - Supabase"
+        L[(PostgreSQL Database)]
+        M[Row Level Security RLS]
+        N[Realtime Subscriptions]
+        O[Storage Buckets]
+        P[Edge Functions]
+    end
+
+    subgraph "External Services"
+        Q[Google Generative AI - Gemini]
+        R[Supabase Auth]
+        S[Email Service]
+    end
+
+    subgraph "Authentication & Authorization"
+        T[JWT Tokens]
+        U[Session Management]
+        V[OAuth Providers]
+    end
+
+    A --> C
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    
+    E --> G
+    E --> H
+    E --> I
+    E --> J
+    E --> K
+    
+    G --> Q
+    H --> R
+    H --> L
+    I --> L
+    I --> M
+    J --> L
+    J --> M
+    K --> L
+    K --> M
+    
+    L --> N
+    L --> O
+    
+    R --> T
+    R --> U
+    R --> V
+    R --> S
+    
+    T --> M
+    U --> M
+
+    style A fill:#e1f5ff
+    style B fill:#e1f5ff
+    style C fill:#00d4aa
+    style D fill:#00d4aa
+    style E fill:#0070f3
+    style F fill:#0070f3
+    style G fill:#7c3aed
+    style H fill:#7c3aed
+    style I fill:#7c3aed
+    style J fill:#7c3aed
+    style K fill:#7c3aed
+    style L fill:#3ecf8e
+    style M fill:#f59e0b
+    style Q fill:#4285f4
+    style R fill:#3ecf8e

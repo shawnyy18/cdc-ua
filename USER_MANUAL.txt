@@ -1,0 +1,767 @@
+ECOKONEK SYSTEM USER MANUAL
+
+
+Chapter 1: Introduction
+
+1.1 Overview of EcoKonek
+
+EcoKonek is a web-based electronic waste (e-waste) management and community donation platform designed for the Province of Pampanga, Philippines. The system connects citizens who wish to responsibly dispose of their electronic devices with barangay-level administrators who manage collections at designated drop-off centers. Through a gamified approach, users earn Eco-Points and track their environmental impact measured in CO₂ emissions prevented.
+
+EcoKonek also supports the internal asset surrender process of the Clark Development Corporation (CDC), allowing authorized personnel to submit official CDC property for proper disposal with full tracking of property numbers and serial numbers.
+
+1.2 Purpose of This Manual
+
+This User Manual provides step-by-step instructions for all system users—regular users, barangay administrators, and super administrators—on how to navigate and use every feature of the EcoKonek platform. Screenshots referenced throughout this document should be inserted at the indicated placeholder locations.
+
+1.3 System Requirements
+
+To access and use EcoKonek, the following are required:
+
+- A device with a modern web browser (Google Chrome, Mozilla Firefox, Microsoft Edge, or Safari)
+- A stable internet connection
+- A valid email address for registration
+- JavaScript enabled in the browser
+
+1.4 User Roles
+
+EcoKonek supports three (3) distinct user roles:
+
+Table 1.1 – User Roles and Descriptions
+
+Role                Description
+Regular User        A citizen who donates or recycles electronic devices, earns Eco-Points, and tracks environmental impact.
+Barangay Admin      A barangay-level administrator who reviews, approves, or rejects donation requests within their assigned barangay. Has access to the Admin Dashboard and CDC Inventory.
+Super Admin         A system-wide administrator who can manage donation requests across all barangays, view the Barangay Leaderboard, export CDC reports, and oversee all platform data.
+
+
+Chapter 2: Getting Started
+
+2.1 Accessing the Platform
+
+Open a web browser and navigate to the EcoKonek website URL. The Landing Page will be displayed.
+
+[Screenshot Placeholder: Landing Page – Hero Section]
+
+2.2 Landing Page Overview
+
+The Landing Page serves as the public-facing introduction to EcoKonek. It contains the following sections:
+
+a) Hero Section – Displays the tagline "Transform E-Waste into Community Impact" with a brief description of the Philippines' e-waste challenge. Two call-to-action buttons are provided: "Donate Your Device" and "Join Community."
+
+b) Live Statistics Bar – Shows three animated counters displaying real-time platform data: total Devices Donated, total kilograms of CO₂ Saved, and total Active Users.
+
+c) How EcoKonek Works – A three-step visual guide explaining the donation process:
+   Step 1: Assess Your Device
+   Step 2: Choose Your Path (donate working devices or recycle broken ones)
+   Step 3: Earn Eco-Points
+
+d) What Can You Donate? – A grid of eight (8) device categories showing the Eco-Point ranges for each:
+
+Table 2.1 – Accepted Device Categories and Point Ranges
+
+Device Category       Eco-Point Range
+Smartphones           25 – 50 points
+Laptops               50 – 100 points
+Tablets               30 – 60 points
+Small Appliances      20 – 40 points
+Batteries             10 – 20 points
+Cables & Chargers     5 – 10 points
+Printers              40 – 80 points
+Headphones            15 – 30 points
+
+e) Our Environmental Impact – A banner showcasing cumulative platform statistics including Devices Rescued, CO₂ Prevented, Lives Connected, and Partner Centers.
+
+f) Call-to-Action Section – Prompts visitors to register or begin donating with buttons linking to the Registration and Donation pages.
+
+g) Footer – Contains platform navigation links, social media icons, and copyright information.
+
+[Screenshot Placeholder: Landing Page – Statistics Bar and How It Works Section]
+[Screenshot Placeholder: Landing Page – Device Categories Grid]
+
+Note: Users who are already logged in will be automatically redirected to the Dashboard upon visiting the Landing Page.
+
+
+Chapter 3: User Registration
+
+3.1 Creating a New Account
+
+To register for an EcoKonek account:
+
+Step 1: From the Landing Page or Login Page, click the "Sign Up" or "Join EcoKonek" link.
+
+Step 2: The Registration Page will be displayed with the header "Join the Movement."
+
+[Screenshot Placeholder: Registration Page]
+
+Step 3: Fill in the required fields:
+
+Table 3.1 – Registration Form Fields
+
+Field               Requirement
+First Name          Required. Enter your given name.
+Last Name           Required. Enter your family name.
+Username            Required. Must be 3–20 characters long. Only letters, numbers, and underscores are allowed.
+Email               Required. Must be a valid email address format.
+Phone Number        Required. Must follow the Philippines format (+63).
+Password            Required. Minimum of 6 characters.
+Confirm Password    Required. Must match the Password field exactly.
+Terms & Conditions  Required. You must check the box to agree to the Terms of Service and Privacy Policy.
+
+Step 4: Click the "Create Account" button.
+
+Step 5: Upon successful registration, a green success banner will appear. You will be automatically redirected to the Login Page after three (3) seconds.
+
+[Screenshot Placeholder: Registration Success Message]
+
+3.2 Registering with Social Accounts
+
+EcoKonek supports registration through third-party providers:
+
+- Google – Click the "Continue with Google" button and follow the Google authentication prompts.
+- Facebook – Click the "Continue with Facebook" button and follow the Facebook authentication prompts.
+
+Upon successful social registration, you will be redirected to your Dashboard.
+
+3.3 Registration Validation Rules
+
+The system enforces the following validation rules during registration:
+- The username must be unique across the platform.
+- The email address must not already be associated with an existing account.
+- The password and confirmation password must be identical.
+- All required fields must be completed before submission.
+- The Terms of Service checkbox must be selected.
+
+
+Chapter 4: Logging In
+
+4.1 Standard Login
+
+Step 1: Navigate to the Login Page. The page displays the header "Welcome Back."
+
+[Screenshot Placeholder: Login Page]
+
+Step 2: Enter your registered email address in the Email field.
+
+Step 3: Enter your password in the Password field. You may click the eye icon to toggle password visibility.
+
+Step 4: Optionally, check the "Remember Me" checkbox to maintain your session.
+
+Step 5: Click the "Sign In" button.
+
+Step 6: Upon successful authentication:
+- Regular Users are redirected to the Dashboard.
+- Admin Users (Barangay Admin or Super Admin) are redirected to the Admin Dashboard.
+
+[Screenshot Placeholder: Dashboard after successful login]
+
+4.2 Social Login
+
+You may also sign in using your Google or Facebook account by clicking the respective button on the Login Page. The authentication process will be handled by the selected provider, and you will be redirected to the appropriate dashboard upon completion.
+
+4.3 Forgot Password
+
+If you have forgotten your password:
+
+Step 1: On the Login Page, click the "Forgot Password?" link.
+
+Step 2: The Forgot Password Page will be displayed.
+
+[Screenshot Placeholder: Forgot Password Page]
+
+Step 3: Enter the email address associated with your account.
+
+Step 4: Click the "Send Reset Link" button.
+
+Step 5: A confirmation screen will appear displaying the message "Check Your Email" along with the email address you submitted.
+
+[Screenshot Placeholder: Password Reset Confirmation Screen]
+
+Step 6: Open your email inbox and follow the instructions in the password reset email to create a new password.
+
+Note: If you do not receive the email, check your spam or junk folder. You may also click "Try Different Email" to submit a different email address.
+
+4.4 Logging Out
+
+To log out of the system:
+
+Step 1: Click your profile avatar in the navigation bar (top-right corner).
+
+Step 2: A dropdown menu will appear showing your name, username, and Eco-Points balance.
+
+Step 3: Click the "Logout" button at the bottom of the dropdown menu.
+
+Step 4: You will be signed out and redirected to the Landing Page.
+
+[Screenshot Placeholder: Profile Dropdown with Logout Button]
+
+
+Chapter 5: Navigation
+
+5.1 Navigation Bar
+
+After logging in, the navigation bar is displayed at the top of all authenticated pages (Dashboard, Donate, and Profile). It contains the following elements:
+
+a) EcoKonek Logo – Clicking the logo returns you to the Landing Page.
+
+b) Navigation Links:
+   - Home – Returns to the Landing Page.
+   - Donate – Opens the Device Donation Page.
+
+c) Profile Dropdown – Located at the top-right corner. Displays your profile image (or initial), name, and current Eco-Points. Clicking it reveals a dropdown menu with links to:
+   - Dashboard
+   - Profile
+   - Settings
+   - Logout
+
+[Screenshot Placeholder: Navigation Bar – Desktop View]
+
+5.2 Mobile Navigation
+
+On mobile devices, the navigation bar collapses into a hamburger menu icon. Tapping this icon opens a slide-over drawer containing the same navigation links and profile information.
+
+[Screenshot Placeholder: Navigation Bar – Mobile View with Drawer Open]
+
+Note: The navigation bar is hidden on the following pages: Landing Page, Login, Registration, Forgot Password, and all Admin pages.
+
+
+Chapter 6: Dashboard
+
+6.1 Overview
+
+The Dashboard is the main hub for regular users after logging in. It provides a summary of your environmental impact, device history, achievements, and community standings.
+
+[Screenshot Placeholder: Full Dashboard View]
+
+6.2 Impact Statistics Cards
+
+At the top of the Dashboard, three (3) statistics cards are displayed:
+
+Table 6.1 – Dashboard Statistics Cards
+
+Card              Icon    Description
+Eco Points        Leaf    Your total accumulated Eco-Points from approved donations.
+CO₂ Saved         Cloud   Total kilograms of CO₂ emissions prevented through your donations.
+Total Donations   Gift    The number of your donation requests that have been approved.
+
+Note: Only donations with an "accepted" or "approved" status are counted toward your statistics.
+
+[Screenshot Placeholder: Dashboard Statistics Cards]
+
+6.3 Your Devices Section
+
+This section displays your donation history organized into two tabs:
+
+a) Donated Tab – Lists all working devices you have donated to the community. Each device card shows:
+   - Device icon based on category
+   - Brand and model name
+   - Device category and condition
+   - Eco-Points earned
+   - CO₂ saved (in kilograms)
+   - Status badge: Pending (yellow), Accepted (green), or Rejected (red)
+
+b) Recycled Tab – Lists all broken or damaged devices you have submitted for recycling. Uses the same card layout with blue accent styling.
+
+[Screenshot Placeholder: Devices Section – Donated Tab]
+[Screenshot Placeholder: Devices Section – Recycled Tab]
+
+If you have no devices in either tab, an empty state message is displayed with a link to the Donate page.
+
+6.4 Achievements Section
+
+The Achievements section tracks your milestones on the platform:
+
+a) Earned Achievements – Displayed as green cards with a check mark icon. Each card shows the achievement title and description.
+
+b) In-Progress Achievements – Displayed as gray cards with a progress bar indicating your completion percentage.
+
+[Screenshot Placeholder: Achievements Section]
+
+6.5 Sidebar
+
+The right sidebar of the Dashboard contains:
+
+a) Top Contributors – A leaderboard showing the top five (5) users on the platform, ranked by Eco-Points. Each entry displays the user's rank, profile image, name, and Eco-Point balance. Clicking a user opens their public community profile.
+
+b) Quick Actions – Shortcut buttons to frequently used features:
+   - New Donation → Opens the Donate page
+   - Community → Opens the Community page
+   - Learn → Opens the Learn page
+   - Profile → Opens the Profile page
+
+[Screenshot Placeholder: Dashboard Sidebar – Leaderboard and Quick Actions]
+
+
+Chapter 7: Donating a Device
+
+7.1 Overview
+
+The Donate page allows you to submit a device for donation or recycling through a guided three-step wizard. A visual progress bar at the top indicates your current step.
+
+[Screenshot Placeholder: Donate Page – Progress Bar]
+
+Prerequisite: You must have a barangay selected in your profile before submitting a standard donation. If no barangay is set, a warning banner will be displayed with a link to your Profile page.
+
+[Screenshot Placeholder: Barangay Warning Banner]
+
+7.2 Step 1: Choose Your Device Category
+
+A grid of eight (8) device category cards is displayed. Each card shows the device name, icon, and Eco-Point range.
+
+Step 1: Click on the card that matches the type of device you wish to donate.
+
+Step 2: The selected card will be highlighted.
+
+Step 3: Click the "Continue" button to proceed to Step 2.
+
+[Screenshot Placeholder: Step 1 – Device Category Selection]
+
+The available categories are: Smartphone, Laptop, Tablet, Desktop, Small Appliance, Battery, Cables/Chargers, and Headphones.
+
+7.3 Step 2: Assess Your Device Condition
+
+Two large cards are displayed for you to assess the condition of your device:
+
+a) Working Device (Green Card)
+   - Description: "Powers on and functions normally"
+   - Earns higher Eco-Points
+   - Device will be donated to the community
+
+b) Broken Device (Orange Card)
+   - Description: "Doesn't power on or has major issues"
+   - Earns lower Eco-Points
+   - Device will be recycled responsibly
+
+Step 1: Click on the card that matches your device's condition.
+
+Step 2: Click "Continue" to proceed to Step 3.
+
+[Screenshot Placeholder: Step 2 – Device Condition Assessment]
+
+7.4 Step 3: Enter Device Details and Submit
+
+This step collects specific information about your device and calculates the environmental impact.
+
+[Screenshot Placeholder: Step 3 – Device Details Form]
+
+7.4.1 Standard Donation
+
+Fill in the following fields:
+
+Table 7.1 – Device Details Form Fields (Standard Donation)
+
+Field                    Requirement
+Brand                    Required. Name of the device manufacturer.
+Model                    Required. Specific model name or number.
+Year Purchased           Optional. The year the device was originally purchased.
+Drop-off Center          Required. Select from the available barangay drop-off centers.
+Additional Description   Optional. Up to 500 characters describing the device's condition or any additional notes.
+
+The available drop-off centers are:
+
+Table 7.2 – Drop-off Center Locations
+
+Drop-off Center                      Location
+Lagundi Barangay Center              Lagundi, Mexico, Pampanga
+Parian Barangay Center               Parian, Mexico, Pampanga
+San Carlos Barangay Center           San Carlos, Mexico, Pampanga
+Sto. Rosario Barangay Center         Sto. Rosario, Mexico, Pampanga
+San Lorenzo Barangay Center          San Lorenzo, Mexico, Pampanga
+
+7.4.2 CDC Asset Surrender
+
+If you are submitting an official Clark Development Corporation asset:
+
+Step 1: Toggle the "CDC Asset" switch to the ON position.
+
+Step 2: Two additional required fields will appear:
+   - Property Number – The official CDC property identification number.
+   - Serial Number – The device serial number.
+
+Step 3: The Year Purchased and Drop-off Center fields will be hidden, as CDC assets follow a separate processing flow.
+
+[Screenshot Placeholder: Step 3 – CDC Asset Toggle Enabled]
+
+7.4.3 Impact Preview
+
+Before submitting, an Impact Preview panel displays the calculated environmental metrics:
+
+- Eco-Points to be earned
+- CO₂ savings in kilograms
+- Device path: "Donated to Community" or "Recycled Responsibly"
+
+Table 7.3 – CO₂ Savings by Device Category and Condition (in kilograms)
+
+Device Category       Working    Broken
+Smartphone            8.5        4.2
+Laptop                18.7       9.4
+Tablet                11.3       5.7
+Desktop               22.1       11.1
+Small Appliance       7.8        3.9
+Battery               3.2        1.6
+Cables/Chargers       1.5        0.8
+Headphones            5.4        2.7
+
+7.4.4 Submitting the Donation
+
+Step 1: Review all entered information and the Impact Preview.
+
+Step 2: Click the submit button. The button label changes depending on your submission type:
+   - "Complete Donation" – For working devices
+   - "Complete Recycle" – For broken devices
+   - "Submit CDC Asset Surrender" – For CDC assets
+
+Step 3: Upon successful submission, a Success Modal will appear displaying:
+   - A checkmark animation
+   - The Eco-Points earned
+   - The CO₂ saved
+
+Step 4: Choose one of two options:
+   - "View Dashboard" – Returns to the Dashboard to see your updated statistics.
+   - "Donate Another Device" – Resets the wizard to submit another device.
+
+[Screenshot Placeholder: Donation Success Modal]
+
+
+Chapter 8: Managing Your Profile
+
+8.1 Accessing Your Profile
+
+Click "Profile" from the navigation bar dropdown or the Dashboard quick actions to open your Profile page.
+
+[Screenshot Placeholder: Profile Page – View Mode]
+
+8.2 Profile Information (View Mode)
+
+The Profile page displays the following information:
+
+a) Profile Card (left column):
+   - Profile image
+   - Full name
+   - Username (displayed as @username)
+   - Email address
+   - Bio
+   - Location
+   - Barangay name
+   - Phone number
+   - Interests (shown as tags)
+   - Member since date (account creation date)
+
+b) Impact Statistics Card:
+   - Eco-Points
+   - Total Donations
+   - CO₂ Saved (kg)
+
+c) Donation History (right column):
+   - A chronological list of all your donations, each showing brand, model, status, category, condition, Eco-Points earned, CO₂ saved, and date submitted.
+
+[Screenshot Placeholder: Profile Page – Donation History]
+
+8.3 Editing Your Profile
+
+Step 1: Click the "Edit Profile" button on the Profile card.
+
+Step 2: The card switches to Edit Mode, revealing editable fields:
+
+Table 8.1 – Editable Profile Fields
+
+Field             Description
+Phone Number      Your phone number in Philippines format.
+Location          Your general location or address.
+Barangay          Select your barangay from the dropdown. Important: This is a one-time, permanent selection.
+Bio               A short description about yourself.
+Interests         Add or remove interest tags by typing and pressing Enter.
+Public Profile    Toggle whether your profile is visible to other users on the community page.
+
+Step 3: Make your desired changes.
+
+Step 4: Click the "Save Changes" button to apply updates.
+
+[Screenshot Placeholder: Profile Page – Edit Mode]
+
+8.4 Uploading a Profile Photo
+
+Step 1: In the Profile card, hover over your current profile image.
+
+Step 2: A camera icon overlay will appear. Click on it.
+
+Step 3: Select an image file from your device. The file must not exceed 5 MB.
+
+Step 4: The image will be uploaded and displayed immediately.
+
+[Screenshot Placeholder: Profile Photo Upload Hover State]
+
+8.5 Selecting Your Barangay (One-Time Selection)
+
+The barangay selection is a critical, permanent action.
+
+Step 1: In Edit Mode, click the Barangay dropdown and select your barangay.
+
+Step 2: A confirmation modal will appear with the following warning:
+
+   "Once you confirm this selection, your barangay cannot be changed."
+
+Step 3: Review the selected barangay name displayed in the modal.
+
+Step 4: Click "Yes, I'm Sure" to confirm, or "Cancel" to go back.
+
+Step 5: After saving your profile with the confirmed barangay, you will be automatically redirected to the Donate page.
+
+[Screenshot Placeholder: Barangay Confirmation Modal]
+
+Important: The barangay field becomes locked after confirmation and cannot be modified. Choose carefully.
+
+
+Chapter 9: Admin Dashboard (Barangay Admin and Super Admin)
+
+9.1 Accessing the Admin Dashboard
+
+Admin users are automatically redirected to the Admin Dashboard upon logging in. The Admin Dashboard is accessible only to users with admin privileges.
+
+[Screenshot Placeholder: Admin Dashboard – Full View]
+
+9.2 Admin Dashboard Header
+
+The header section displays:
+- "Admin Dashboard" title
+- Your assigned barangay name (for Barangay Admins) or "Super Admin (All Barangays)" (for Super Admins)
+- Action buttons:
+  - CDC Inventory – Opens the CDC Inventory management page
+  - Export CDC Report – Downloads a CSV file of all CDC asset records
+  - Refresh – Reloads the dashboard data
+  - Sign Out – Logs out of the system
+
+[Screenshot Placeholder: Admin Dashboard Header]
+
+9.3 Statistics Overview
+
+Four (4) summary cards are displayed at the top of the dashboard:
+
+Table 9.1 – Admin Statistics Cards
+
+Card        Description
+Total       Total number of donation requests received.
+Pending     Number of donation requests awaiting review.
+Accepted    Number of donation requests that have been approved.
+Rejected    Number of donation requests that have been declined.
+
+[Screenshot Placeholder: Admin Statistics Cards]
+
+9.4 Inventory by Category
+
+A table displays the count of devices grouped by category. For Barangay Admins, only devices within their assigned barangay are shown. Super Admins see inventory across all barangays.
+
+[Screenshot Placeholder: Inventory by Category Table]
+
+9.5 Managing Donation Requests
+
+9.5.1 Viewing Donation Requests
+
+Donation requests are displayed as a grid of cards below the statistics section. Each card shows:
+- User's name and email
+- Device type, brand, and model
+- Device condition
+- CDC asset badge (if applicable) with property number and serial number
+- Current status
+
+9.5.2 Filtering Donation Requests
+
+Use the filter tabs above the request cards to view:
+- All – Displays every donation request
+- Pending – Shows only requests awaiting review
+- Accepted – Shows only approved requests
+- Rejected – Shows only declined requests
+
+[Screenshot Placeholder: Donation Requests with Filter Tabs]
+
+9.5.3 Approving a Donation Request
+
+Step 1: Locate the pending donation request card.
+
+Step 2: Click the "Approve" button (green) on the card.
+
+Step 3: The system will:
+   - Update the donation status to "Accepted"
+   - Recalculate the user's Eco-Points, CO₂ savings, and donation count based on all their accepted donations
+   - Refresh the dashboard statistics
+
+[Screenshot Placeholder: Approving a Donation Request]
+
+9.5.4 Rejecting a Donation Request
+
+Step 1: Locate the pending donation request card.
+
+Step 2: Click the "Reject" button (red) on the card.
+
+Step 3: The system will:
+   - Update the donation status to "Rejected"
+   - Recalculate the user's statistics to exclude the rejected donation
+   - Refresh the dashboard statistics
+
+Note: Barangay Admins can only manage donations within their assigned barangay. Super Admins can manage donations across all barangays.
+
+9.6 Exporting CDC Reports
+
+Step 1: Click the "Export CDC Report" button in the dashboard header.
+
+Step 2: A CSV (Comma-Separated Values) file will be downloaded to your device containing the following fields:
+   - Date of submission
+   - Device category
+   - Brand
+   - Model
+   - Property Number
+   - Serial Number
+   - Status
+
+The exported report can be opened in Microsoft Excel, Google Sheets, or any spreadsheet application.
+
+[Screenshot Placeholder: Exported CDC Report in Spreadsheet]
+
+
+Chapter 10: CDC Inventory Management
+
+10.1 Accessing the CDC Inventory Page
+
+From the Admin Dashboard, click the "CDC Inventory" button in the header to open the dedicated CDC Inventory page.
+
+[Screenshot Placeholder: CDC Inventory Page]
+
+10.2 Viewing CDC Assets
+
+The CDC Inventory page displays all devices submitted as CDC assets. Each entry includes:
+- Device category, brand, and model
+- Property number and serial number
+- Submission date
+- Current status (Pending, Accepted, or Rejected)
+
+10.3 Searching and Filtering
+
+Use the search bar to filter CDC assets by property number, serial number, brand, or model.
+
+10.4 Managing CDC Assets
+
+a) Approving/Rejecting – Click the status action button on an asset entry. A confirmation modal will appear prompting you to confirm the action.
+
+b) Deleting – Click the delete button on an asset entry. A confirmation modal will display the asset details and ask you to confirm permanent deletion.
+
+[Screenshot Placeholder: CDC Asset Delete Confirmation Modal]
+
+10.5 Toast Notifications
+
+After each action (approve, reject, or delete), a toast notification will briefly appear at the top of the page confirming the operation was successful.
+
+
+Chapter 11: Barangay Leaderboard (Admin Only)
+
+11.1 Accessing the Leaderboard
+
+From the Admin Dashboard, navigate to the Barangay Leaderboard page.
+
+[Screenshot Placeholder: Barangay Leaderboard Page]
+
+11.2 Understanding the Rankings
+
+The Barangay Leaderboard ranks all participating barangays based on their combined environmental performance. Each leaderboard entry displays:
+
+Table 11.1 – Leaderboard Entry Fields
+
+Field               Description
+Rank                The barangay's position on the leaderboard.
+Barangay Name       Name of the barangay and its municipality.
+Donation Count      Total number of accepted donations from the barangay.
+CO₂ Saved           Total kilograms of CO₂ prevented.
+Contributors        Number of active users from the barangay.
+Score               A visual percentage bar representing overall performance.
+
+The leaderboard can be refreshed using the Refresh button in the page header.
+
+
+Chapter 12: Troubleshooting
+
+12.1 Common Issues and Solutions
+
+Table 12.1 – Troubleshooting Guide
+
+Issue                                          Possible Cause                          Solution
+Cannot log in                                  Incorrect email or password             Verify your credentials. Use the "Forgot Password" link to reset your password.
+Social login (Google/Facebook) not working      Browser pop-up blocker enabled          Allow pop-ups for the EcoKonek website in your browser settings.
+"Barangay required" warning on Donate page      No barangay selected in profile         Go to your Profile page, click "Edit Profile," and select your barangay.
+Donation not appearing in Dashboard             Donation is still pending review        Wait for an admin to approve your donation. Only accepted donations appear in your statistics.
+Eco-Points not updating after donation          Donation has not been approved yet       Statistics update only when an admin approves the donation.
+Cannot change barangay after selection           Barangay selection is permanent         This is by design. The barangay field is locked after the initial confirmation.
+Profile photo not uploading                     File size exceeds limit                 Ensure your image file is under 5 MB.
+Password reset email not received               Email went to spam folder               Check your spam or junk folder. Wait a few minutes and try again.
+Admin Dashboard shows no data                   No donations submitted yet              Data will appear once users begin submitting donations to your barangay.
+Export CDC Report button not downloading         Browser download settings               Check your browser's download settings and allow downloads from the website.
+Session expired unexpectedly                    Authentication token expired             Log in again. The system checks token validity on each page visit.
+
+12.2 Browser Compatibility
+
+EcoKonek is optimized for the latest versions of the following browsers:
+- Google Chrome (version 90 and above)
+- Mozilla Firefox (version 88 and above)
+- Microsoft Edge (version 90 and above)
+- Apple Safari (version 14 and above)
+
+12.3 Contacting Support
+
+If you encounter issues not covered in this manual, please contact the EcoKonek support team through the contact information provided in the website footer or reach out to your barangay administrator for assistance.
+
+
+Appendix A: Eco-Points Reference Table
+
+Table A.1 – Eco-Points Awarded by Device Category and Condition
+
+Device Category       Working Condition    Broken Condition
+Smartphone            35 – 75 points       25 – 50 points
+Laptop                75 – 150 points      50 – 100 points
+Tablet                45 – 90 points       30 – 60 points
+Desktop               60 – 120 points      40 – 80 points
+Small Appliance       30 – 60 points       20 – 40 points
+Battery               15 – 25 points       10 – 15 points
+Cables/Chargers       8 – 15 points        5 – 10 points
+Headphones            20 – 40 points       15 – 25 points
+
+
+Appendix B: CO₂ Savings Reference Table
+
+Table B.1 – Estimated CO₂ Savings by Device Category and Condition (in kilograms)
+
+Device Category       Working    Broken
+Smartphone            8.5 kg     4.2 kg
+Laptop                18.7 kg    9.4 kg
+Tablet                11.3 kg    5.7 kg
+Desktop               22.1 kg    11.1 kg
+Small Appliance       7.8 kg     3.9 kg
+Battery               3.2 kg     1.6 kg
+Cables/Chargers       1.5 kg     0.8 kg
+Headphones            5.4 kg     2.7 kg
+
+
+Appendix C: Glossary of Terms
+
+Term                    Definition
+Barangay                The smallest administrative division in the Philippines. In EcoKonek, it is used to organize users and donations by locality.
+CDC                     Clark Development Corporation. A government-owned and controlled corporation managing the Clark Freeport Zone.
+CDC Asset Surrender     The process of officially submitting a CDC-owned electronic device for disposal through the EcoKonek system.
+CO₂ Saved               The estimated amount of carbon dioxide emissions prevented by properly donating or recycling an electronic device, measured in kilograms.
+Drop-off Center         A designated physical location where users bring their electronic devices for donation or recycling.
+Eco-Points              A gamified reward system that assigns points to users based on their donations. Points vary by device type and condition.
+E-Waste                 Electronic waste. Discarded electrical or electronic devices and components.
+RLS                     Row Level Security. A database security feature used by Supabase to control data access at the row level based on user roles.
+Service Role            A privileged database role used internally by the system for administrative operations such as cascading deletions.
+Supabase                The open-source backend-as-a-service platform used by EcoKonek for authentication, database management, and real-time data.
+
+
+Appendix D: System Navigation Map
+
+Page                          URL Path                Access Level
+Landing Page                  /                       Public (redirects logged-in users to Dashboard)
+Login                         /login                  Public
+Registration                  /register               Public
+Forgot Password               /forgot-password        Public
+Dashboard                     /dashboard              Authenticated Users
+Donate Device                 /donate                 Authenticated Users
+Profile                       /profile                Authenticated Users
+Admin Dashboard               /admin                  Admin Users Only
+CDC Inventory                 /admin/cdc-inventory    Admin Users Only
+Barangay Leaderboard          /admin/leaderboard      Admin Users Only

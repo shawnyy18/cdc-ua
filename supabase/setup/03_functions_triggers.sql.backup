@@ -1,0 +1,691 @@
+-- =====================================================
+-- DATABASE FUNCTIONS AND TRIGGERS
+-- Automated logic and data integrity
+-- Run this AFTER 02_row_level_security.sql
+-- =====================================================
+
+-- =====================================================
+-- 1. TIMESTAMP UPDATE FUNCTION
+-- Automatically update updated_at on row changes
+-- =====================================================
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Apply to all tables with updated_at
+CREATE TRIGGER update_barangays_updated_at
+  BEFORE UPDATE ON barangays
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_users_updated_at
+  BEFORE UPDATE ON users
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_donations_updated_at
+  BEFORE UPDATE ON donations
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_drop_off_centers_updated_at
+  BEFORE UPDATE ON drop_off_centers
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_community_posts_updated_at
+  BEFORE UPDATE ON community_posts
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_post_comments_updated_at
+  BEFORE UPDATE ON post_comments
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_marketplace_items_updated_at
+  BEFORE UPDATE ON marketplace_items
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_seller_profiles_updated_at
+  BEFORE UPDATE ON seller_profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_transactions_updated_at
+  BEFORE UPDATE ON transactions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_notifications_updated_at
+  BEFORE UPDATE ON notifications
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- =====================================================
+-- 2. POST LIKES COUNT FUNCTION
+-- Update likes_count when likes are added/removed
+-- =====================================================
+CREATE OR REPLACE FUNCTION update_post_likes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    UPDATE community_posts 
+    SET likes_count = likes_count + 1 
+    WHERE id = NEW.post_id;
+    RETURN NEW;
+  ELSIF TG_OP = 'DELETE' THEN
+    UPDATE community_posts 
+    SET likes_count = GREATEST(0, likes_count - 1)
+    WHERE id = OLD.post_id;
+    RETURN OLD;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_likes_count_on_insert
+  AFTER INSERT ON post_likes
+  FOR EACH ROW
+  EXECUTE FUNCTION update_post_likes_count();
+
+CREATE TRIGGER update_likes_count_on_delete
+  AFTER DELETE ON post_likes
+  FOR EACH ROW
+  EXECUTE FUNCTION update_post_likes_count();
+
+-- =====================================================
+-- 3. POST COMMENTS COUNT FUNCTION
+-- Update comments_count when comments are added/removed
+-- =====================================================
+CREATE OR REPLACE FUNCTION update_post_comments_count()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.is_active = true) THEN
+    UPDATE community_posts 
+    SET comments_count = comments_count + 1 
+    WHERE id = NEW.post_id;
+    RETURN NEW;
+  ELSIF (TG_OP = 'DELETE' AND OLD.is_active = true) THEN
+    UPDATE community_posts 
+    SET comments_count = GREATEST(0, comments_count - 1)
+    WHERE id = OLD.post_id;
+    RETURN OLD;
+  ELSIF (TG_OP = 'UPDATE') THEN
+    -- Comment was deactivated
+    IF OLD.is_active = true AND NEW.is_active = false THEN
+      UPDATE community_posts 
+      SET comments_count = GREATEST(0, comments_count - 1)
+      WHERE id = NEW.post_id;
+    -- Comment was reactivated
+    ELSIF OLD.is_active = false AND NEW.is_active = true THEN
+      UPDATE community_posts 
+      SET comments_count = comments_count + 1 
+      WHERE id = NEW.post_id;
+    END IF;
+    RETURN NEW;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_comments_count_on_insert
+  AFTER INSERT ON post_comments
+  FOR EACH ROW
+  EXECUTE FUNCTION update_post_comments_count();
+
+CREATE TRIGGER update_comments_count_on_delete
+  AFTER DELETE ON post_comments
+  FOR EACH ROW
+  EXECUTE FUNCTION update_post_comments_count();
+
+CREATE TRIGGER update_comments_count_on_update
+  AFTER UPDATE ON post_comments
+  FOR EACH ROW
+  EXECUTE FUNCTION update_post_comments_count();
+
+-- =====================================================
+-- 4. ASSIGN BARANGAY TO DONATION
+-- Auto-assign barangay based on drop-off center or user
+-- =====================================================
+CREATE OR REPLACE FUNCTION assign_barangay_to_donation()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Auto-assign barangay from the drop-off center
+  IF NEW.drop_off_center IS NOT NULL THEN
+    NEW.barangay_id := (
+      SELECT barangay_id 
+      FROM drop_off_centers 
+      WHERE name = NEW.drop_off_center 
+      LIMIT 1
+    );
+  END IF;
+  
+  -- If still null, try to assign from user's barangay
+  IF NEW.barangay_id IS NULL THEN
+    NEW.barangay_id := (
+      SELECT barangay_id 
+      FROM users 
+      WHERE id = NEW.user_id 
+      LIMIT 1
+    );
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER assign_barangay_trigger
+  BEFORE INSERT OR UPDATE ON donations
+  FOR EACH ROW
+  EXECUTE FUNCTION assign_barangay_to_donation();
+
+-- =====================================================
+-- 5. VALIDATE DONATION DATA
+-- Ensure donation data is valid before insert
+-- =====================================================
+CREATE OR REPLACE FUNCTION validate_donation()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Ensure eco_points_earned is non-negative
+  IF NEW.eco_points_earned < 0 THEN
+    RAISE EXCEPTION 'Eco points earned cannot be negative';
+  END IF;
+  
+  -- Ensure co2_saved is non-negative
+  IF NEW.co2_saved < 0 THEN
+    RAISE EXCEPTION 'CO2 saved cannot be negative';
+  END IF;
+  
+  -- Ensure year is reasonable if provided
+  IF NEW.year IS NOT NULL AND (NEW.year < 1900 OR NEW.year > EXTRACT(YEAR FROM NOW()) + 1) THEN
+    RAISE EXCEPTION 'Invalid year provided';
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_donation_before_insert
+  BEFORE INSERT ON donations
+  FOR EACH ROW
+  EXECUTE FUNCTION validate_donation();
+
+-- =====================================================
+-- 6. UPDATE USER STATS ON DONATION
+-- Update user statistics when donation is completed
+-- =====================================================
+CREATE OR REPLACE FUNCTION update_user_stats_on_donation()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Only update stats when donation is completed
+  IF NEW.status = 'completed' AND (OLD IS NULL OR OLD.status != 'completed') THEN
+    UPDATE users
+    SET 
+      eco_points = eco_points + NEW.eco_points_earned,
+      total_donations = total_donations + 1,
+      total_co2_saved = total_co2_saved + NEW.co2_saved,
+      donated_devices = CASE WHEN NEW.condition = 'working' THEN donated_devices + 1 ELSE donated_devices END,
+      recycled_devices = CASE WHEN NEW.condition IN ('broken', 'damaged') THEN recycled_devices + 1 ELSE recycled_devices END
+    WHERE id = NEW.user_id;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_user_stats_trigger
+  AFTER INSERT OR UPDATE ON donations
+  FOR EACH ROW
+  EXECUTE FUNCTION update_user_stats_on_donation();
+
+-- =====================================================
+-- 7. CHECK ACHIEVEMENTS
+-- Check if user has earned any achievements
+-- =====================================================
+CREATE OR REPLACE FUNCTION check_achievements(p_user_id UUID)
+RETURNS void AS $$
+DECLARE
+  v_eco_points INTEGER;
+  v_total_donations INTEGER;
+  v_total_co2_saved DECIMAL;
+  v_recycled_devices INTEGER;
+BEGIN
+  -- Get user stats
+  SELECT eco_points, total_donations, total_co2_saved, recycled_devices
+  INTO v_eco_points, v_total_donations, v_total_co2_saved, v_recycled_devices
+  FROM users
+  WHERE id = p_user_id;
+  
+  -- First donation achievement
+  IF v_total_donations >= 1 THEN
+    INSERT INTO user_achievements (user_id, achievement_id)
+    VALUES (p_user_id, 'first-donation')
+    ON CONFLICT (user_id, achievement_id) DO NOTHING;
+  END IF;
+  
+  -- Eco Warrior (100 points)
+  IF v_eco_points >= 100 THEN
+    INSERT INTO user_achievements (user_id, achievement_id)
+    VALUES (p_user_id, 'eco-warrior')
+    ON CONFLICT (user_id, achievement_id) DO NOTHING;
+  END IF;
+  
+  -- Eco Champion (500 points)
+  IF v_eco_points >= 500 THEN
+    INSERT INTO user_achievements (user_id, achievement_id)
+    VALUES (p_user_id, 'eco-champion')
+    ON CONFLICT (user_id, achievement_id) DO NOTHING;
+  END IF;
+  
+  -- Generous Giver (5 donations)
+  IF v_total_donations >= 5 THEN
+    INSERT INTO user_achievements (user_id, achievement_id)
+    VALUES (p_user_id, 'generous-giver')
+    ON CONFLICT (user_id, achievement_id) DO NOTHING;
+  END IF;
+  
+  -- Donation Hero (10 donations)
+  IF v_total_donations >= 10 THEN
+    INSERT INTO user_achievements (user_id, achievement_id)
+    VALUES (p_user_id, 'donation-hero')
+    ON CONFLICT (user_id, achievement_id) DO NOTHING;
+  END IF;
+  
+  -- Carbon Saver (50kg CO2)
+  IF v_total_co2_saved >= 50 THEN
+    INSERT INTO user_achievements (user_id, achievement_id)
+    VALUES (p_user_id, 'carbon-saver')
+    ON CONFLICT (user_id, achievement_id) DO NOTHING;
+  END IF;
+  
+  -- Climate Protector (100kg CO2)
+  IF v_total_co2_saved >= 100 THEN
+    INSERT INTO user_achievements (user_id, achievement_id)
+    VALUES (p_user_id, 'climate-protector')
+    ON CONFLICT (user_id, achievement_id) DO NOTHING;
+  END IF;
+  
+  -- Tech Recycler (recycled devices)
+  IF v_recycled_devices >= 1 THEN
+    INSERT INTO user_achievements (user_id, achievement_id)
+    VALUES (p_user_id, 'tech-recycler')
+    ON CONFLICT (user_id, achievement_id) DO NOTHING;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to check achievements after donation
+CREATE OR REPLACE FUNCTION trigger_check_achievements()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.status = 'completed' THEN
+    PERFORM check_achievements(NEW.user_id);
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_achievements_trigger
+  AFTER INSERT OR UPDATE ON donations
+  FOR EACH ROW
+  EXECUTE FUNCTION trigger_check_achievements();
+
+-- =====================================================
+-- 8. AUDIT LOG FUNCTION
+-- Log admin activities
+-- =====================================================
+CREATE OR REPLACE FUNCTION log_admin_activity()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO audit_log (admin_id, action_details)
+  VALUES (
+    NULLIF(current_setting('request.jwt.claim.sub', true), '')::uuid,
+    TG_OP || ' on ' || TG_TABLE_NAME || ' table - Record ID: ' || COALESCE(OLD.id::text, NEW.id::text)
+  );
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Attach to sensitive tables
+CREATE TRIGGER audit_users_changes
+  AFTER UPDATE OR DELETE ON users
+  FOR EACH ROW
+  EXECUTE FUNCTION log_admin_activity();
+
+CREATE TRIGGER audit_donations_changes
+  AFTER UPDATE OR DELETE ON donations
+  FOR EACH ROW
+  WHEN (NEW.status IS DISTINCT FROM OLD.status)
+  EXECUTE FUNCTION log_admin_activity();
+
+-- =====================================================
+-- 9. TOGGLE LIKE FUNCTION
+-- Toggle like on a post (like if not liked, unlike if liked)
+-- =====================================================
+CREATE OR REPLACE FUNCTION toggle_like(
+  p_post_id UUID,
+  p_user_id UUID
+)
+RETURNS JSONB AS $$
+DECLARE
+  v_exists BOOLEAN;
+  v_new_count INTEGER;
+BEGIN
+  -- Check if like already exists
+  SELECT EXISTS (
+    SELECT 1 FROM post_likes 
+    WHERE post_id = p_post_id AND user_id = p_user_id
+  ) INTO v_exists;
+  
+  IF v_exists THEN
+    -- Unlike: delete the like
+    DELETE FROM post_likes 
+    WHERE post_id = p_post_id AND user_id = p_user_id;
+    
+    -- Get new count
+    SELECT likes_count INTO v_new_count 
+    FROM community_posts 
+    WHERE id = p_post_id;
+    
+    RETURN jsonb_build_object(
+      'liked', false,
+      'likes_count', v_new_count
+    );
+  ELSE
+    -- Like: insert the like
+    INSERT INTO post_likes (post_id, user_id)
+    VALUES (p_post_id, p_user_id);
+    
+    -- Get new count
+    SELECT likes_count INTO v_new_count 
+    FROM community_posts 
+    WHERE id = p_post_id;
+    
+    RETURN jsonb_build_object(
+      'liked', true,
+      'likes_count', v_new_count
+    );
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION toggle_like(UUID, UUID) TO authenticated;
+
+-- =====================================================
+-- 10. TOGGLE FOLLOW FUNCTION
+-- Toggle follow relationship (follow if not following, unfollow if following)
+-- =====================================================
+CREATE OR REPLACE FUNCTION toggle_follow(
+  p_follower_id UUID,
+  p_following_id UUID
+)
+RETURNS JSONB AS $$
+DECLARE
+  v_exists BOOLEAN;
+BEGIN
+  -- Prevent self-follow
+  IF p_follower_id = p_following_id THEN
+    RAISE EXCEPTION 'Cannot follow yourself';
+  END IF;
+  
+  -- Check if follow already exists
+  SELECT EXISTS (
+    SELECT 1 FROM follows 
+    WHERE follower_id = p_follower_id AND following_id = p_following_id
+  ) INTO v_exists;
+  
+  IF v_exists THEN
+    -- Unfollow: delete the relationship
+    DELETE FROM follows 
+    WHERE follower_id = p_follower_id AND following_id = p_following_id;
+    
+    RETURN jsonb_build_object(
+      'following', false,
+      'message', 'Unfollowed successfully'
+    );
+  ELSE
+    -- Follow: insert the relationship
+    INSERT INTO follows (follower_id, following_id)
+    VALUES (p_follower_id, p_following_id);
+    
+    RETURN jsonb_build_object(
+      'following', true,
+      'message', 'Followed successfully'
+    );
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION toggle_follow(UUID, UUID) TO authenticated;
+
+-- =====================================================
+-- 11. GET COMMUNITY FEED FUNCTION
+-- Get community posts with like status for current user
+-- =====================================================
+CREATE OR REPLACE FUNCTION get_community_feed(
+  p_user_id UUID,
+  p_limit INTEGER DEFAULT 50,
+  p_offset INTEGER DEFAULT 0
+)
+RETURNS TABLE (
+  id UUID,
+  user_id UUID,
+  content TEXT,
+  likes_count INTEGER,
+  comments_count INTEGER,
+  created_at TIMESTAMPTZ,
+  username VARCHAR,
+  full_name VARCHAR,
+  profile_image_url TEXT,
+  is_seller BOOLEAN,
+  user_liked BOOLEAN
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    p.id,
+    p.user_id,
+    p.content,
+    p.likes_count,
+    p.comments_count,
+    p.created_at,
+    u.username,
+    u.full_name,
+    u.profile_image_url,
+    u.is_seller,
+    EXISTS (
+      SELECT 1 FROM post_likes pl 
+      WHERE pl.post_id = p.id AND pl.user_id = p_user_id
+    ) as user_liked
+  FROM community_posts p
+  JOIN users u ON p.user_id = u.id
+  WHERE p.is_active = true
+  ORDER BY p.created_at DESC
+  LIMIT p_limit
+  OFFSET p_offset;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION get_community_feed(UUID, INTEGER, INTEGER) TO authenticated;
+
+-- =====================================================
+-- 12. GET COMMENTS FOR POST FUNCTION
+-- Get all comments for a specific post
+-- =====================================================
+CREATE OR REPLACE FUNCTION get_comments_for_post(p_post_id UUID)
+RETURNS TABLE (
+  id UUID,
+  post_id UUID,
+  user_id UUID,
+  content TEXT,
+  created_at TIMESTAMPTZ,
+  username VARCHAR,
+  full_name VARCHAR,
+  profile_image_url TEXT
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    c.id,
+    c.post_id,
+    c.user_id,
+    c.content,
+    c.created_at,
+    u.username,
+    u.full_name,
+    u.profile_image_url
+  FROM post_comments c
+  JOIN users u ON c.user_id = u.id
+  WHERE c.post_id = p_post_id AND c.is_active = true
+  ORDER BY c.created_at ASC;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION get_comments_for_post(UUID) TO authenticated;
+
+-- =====================================================
+-- 13. GET FOLLOWERS LIST FUNCTION
+-- Get list of users following a specific user
+-- =====================================================
+CREATE OR REPLACE FUNCTION get_followers_list(p_user_id UUID)
+RETURNS TABLE (
+  id UUID,
+  username VARCHAR,
+  full_name VARCHAR,
+  profile_image_url TEXT,
+  bio TEXT,
+  is_following_back BOOLEAN,
+  created_at TIMESTAMPTZ
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    u.id,
+    u.username,
+    u.full_name,
+    u.profile_image_url,
+    u.bio,
+    EXISTS (
+      SELECT 1 FROM follows f2 
+      WHERE f2.follower_id = p_user_id AND f2.following_id = u.id
+    ) as is_following_back,
+    f.created_at
+  FROM follows f
+  JOIN users u ON f.follower_id = u.id
+  WHERE f.following_id = p_user_id
+  ORDER BY f.created_at DESC;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION get_followers_list(UUID) TO authenticated;
+
+-- =====================================================
+-- 14. GET FOLLOWING LIST FUNCTION
+-- Get list of users that a specific user follows
+-- =====================================================
+CREATE OR REPLACE FUNCTION get_following_list(p_user_id UUID)
+RETURNS TABLE (
+  id UUID,
+  username VARCHAR,
+  full_name VARCHAR,
+  profile_image_url TEXT,
+  bio TEXT,
+  is_following_back BOOLEAN,
+  created_at TIMESTAMPTZ
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    u.id,
+    u.username,
+    u.full_name,
+    u.profile_image_url,
+    u.bio,
+    EXISTS (
+      SELECT 1 FROM follows f2 
+      WHERE f2.follower_id = u.id AND f2.following_id = p_user_id
+    ) as is_following_back,
+    f.created_at
+  FROM follows f
+  JOIN users u ON f.following_id = u.id
+  WHERE f.follower_id = p_user_id
+  ORDER BY f.created_at DESC;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION get_following_list(UUID) TO authenticated;
+
+-- =====================================================
+-- 15. HANDLE NEW USER REGISTRATION
+-- Automatically create user profile when someone signs up
+-- =====================================================
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.users (
+    id,
+    email,
+    full_name,
+    username,
+    phone,
+    bio,
+    location,
+    interests,
+    profile_image_url,
+    is_public,
+    is_seller,
+    is_active,
+    is_admin,
+    barangay_id,
+    eco_points,
+    total_donations,
+    total_co2_saved,
+    donated_devices,
+    recycled_devices,
+    created_at,
+    updated_at
+  ) VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', 'User'),
+    COALESCE(NEW.raw_user_meta_data->>'username', SPLIT_PART(NEW.email, '@', 1)),
+    COALESCE(NEW.raw_user_meta_data->>'phone', NULL),
+    '',
+    '',
+    ARRAY[]::TEXT[],
+    COALESCE(NEW.raw_user_meta_data->>'avatar_url', ''),
+    true,
+    false,
+    true,
+    false,
+    NULL,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NOW(),
+    NOW()
+  )
+  ON CONFLICT (id) DO NOTHING;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create trigger for new user registration
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION handle_new_user();
+
+-- =====================================================
+-- FUNCTIONS AND TRIGGERS COMPLETE
+-- Next: Run 04_storage_setup.sql or configure storage via dashboard
+-- =====================================================

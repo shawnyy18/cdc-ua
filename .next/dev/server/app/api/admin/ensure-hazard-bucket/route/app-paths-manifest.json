@@ -1,0 +1,3 @@
+{
+  "/api/admin/ensure-hazard-bucket/route": "app/api/admin/ensure-hazard-bucket/route.js"
+}

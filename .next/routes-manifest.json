@@ -1,0 +1,242 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "hybrid",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/admin/cdc-inventory",
+      "regex": "^/admin/cdc\\-inventory(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/cdc\\-inventory(?:/)?$"
+    },
+    {
+      "page": "/admin/leaderboard",
+      "regex": "^/admin/leaderboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/leaderboard(?:/)?$"
+    },
+    {
+      "page": "/admin/sql-editor",
+      "regex": "^/admin/sql\\-editor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/sql\\-editor(?:/)?$"
+    },
+    {
+      "page": "/api/admin/cdc-delete",
+      "regex": "^/api/admin/cdc\\-delete(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/cdc\\-delete(?:/)?$"
+    },
+    {
+      "page": "/api/admin/cdc-status",
+      "regex": "^/api/admin/cdc\\-status(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/cdc\\-status(?:/)?$"
+    },
+    {
+      "page": "/api/admin/department-leaderboard",
+      "regex": "^/api/admin/department\\-leaderboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/department\\-leaderboard(?:/)?$"
+    },
+    {
+      "page": "/api/admin/inventory-by-category",
+      "regex": "^/api/admin/inventory\\-by\\-category(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/inventory\\-by\\-category(?:/)?$"
+    },
+    {
+      "page": "/api/admin/sql-editor",
+      "regex": "^/api/admin/sql\\-editor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/sql\\-editor(?:/)?$"
+    },
+    {
+      "page": "/api/chatbot",
+      "regex": "^/api/chatbot(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/chatbot(?:/)?$"
+    },
+    {
+      "page": "/api/check-ai-key",
+      "regex": "^/api/check\\-ai\\-key(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/check\\-ai\\-key(?:/)?$"
+    },
+    {
+      "page": "/api/debug/feed-check",
+      "regex": "^/api/debug/feed\\-check(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/debug/feed\\-check(?:/)?$"
+    },
+    {
+      "page": "/api/generate-quiz",
+      "regex": "^/api/generate\\-quiz(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/generate\\-quiz(?:/)?$"
+    },
+    {
+      "page": "/api/health",
+      "regex": "^/api/health(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/health(?:/)?$"
+    },
+    {
+      "page": "/api/ping",
+      "regex": "^/api/ping(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/ping(?:/)?$"
+    },
+    {
+      "page": "/api/run-migration",
+      "regex": "^/api/run\\-migration(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/run\\-migration(?:/)?$"
+    },
+    {
+      "page": "/api/socket",
+      "regex": "^/api/socket(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/socket(?:/)?$"
+    },
+    {
+      "page": "/api/stats",
+      "regex": "^/api/stats(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/stats(?:/)?$"
+    },
+    {
+      "page": "/api/supabase/functions/auth-handler",
+      "regex": "^/api/supabase/functions/auth\\-handler(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/supabase/functions/auth\\-handler(?:/)?$"
+    },
+    {
+      "page": "/api/supabase/functions/donation-handler",
+      "regex": "^/api/supabase/functions/donation\\-handler(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/supabase/functions/donation\\-handler(?:/)?$"
+    },
+    {
+      "page": "/api/supabase/functions/user-profile",
+      "regex": "^/api/supabase/functions/user\\-profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/supabase/functions/user\\-profile(?:/)?$"
+    },
+    {
+      "page": "/api/update-points",
+      "regex": "^/api/update\\-points(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/update\\-points(?:/)?$"
+    },
+    {
+      "page": "/auth/callback",
+      "regex": "^/auth/callback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/callback(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/device-condition",
+      "regex": "^/device\\-condition(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/device\\-condition(?:/)?$"
+    },
+    {
+      "page": "/donate",
+      "regex": "^/donate(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/donate(?:/)?$"
+    },
+    {
+      "page": "/forgot-password",
+      "regex": "^/forgot\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/forgot\\-password(?:/)?$"
+    },
+    {
+      "page": "/hazardous-submission",
+      "regex": "^/hazardous\\-submission(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/hazardous\\-submission(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/profile",
+      "regex": "^/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/profile(?:/)?$"
+    },
+    {
+      "page": "/register",
+      "regex": "^/register(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/register(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

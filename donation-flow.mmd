@@ -1,0 +1,32 @@
+%% EcoKonek Donation Submission Flow
+sequenceDiagram
+    participant U as User
+    participant FE as Next.js Frontend
+    participant API as /api/donation-handler
+    participant Auth as Supabase Auth
+    participant DB as PostgreSQL
+    participant RLS as RLS Policy
+    participant Trigger as Database Trigger
+
+    U->>FE: Fill Donation Form
+    FE->>FE: Validate Input
+    FE->>API: POST {deviceType, condition, centerId}
+    
+    API->>Auth: Extract JWT from Headers
+    Auth->>API: Verify Token → userId
+    
+    API->>DB: INSERT INTO donations
+    DB->>RLS: Check auth.uid() = user_id
+    
+    alt RLS Pass
+        RLS->>Trigger: Insert Allowed
+        Trigger->>Trigger: calculate_eco_impact()
+        Trigger->>DB: Update eco_points, co2_saved
+        DB->>API: Return {donation_id, eco_points}
+        API->>FE: {success: true, donation}
+        FE->>U: Show Success + Eco Impact
+    else RLS Fail
+        RLS->>API: Error 42501
+        API->>FE: {success: false, error}
+        FE->>U: Show Error Message
+    end
