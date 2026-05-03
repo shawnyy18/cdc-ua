@@ -18,16 +18,6 @@ interface UserProfile {
   profile_image_url?: string
 }
 
-interface Achievement {
-  id: string
-  title: string
-  description: string
-  icon: string
-  earned: boolean
-  progress: number
-  category: string
-}
-
 interface Donation {
   id: string
   device_category: string
@@ -55,7 +45,6 @@ interface LeaderboardUser {
 
 export default function Dashboard() {
   const [user, setUser] = useState<UserProfile | null>(null)
-  const [achievements, setAchievements] = useState<Achievement[]>([])
   const [donations, setDonations] = useState<Donation[]>([])
   const [donatedDevices, setDonatedDevices] = useState<Donation[]>([])
   const [recycledDevices, setRecycledDevices] = useState<Donation[]>([])
@@ -159,9 +148,6 @@ export default function Dashboard() {
         if (userResponse.status === 'fulfilled' && userResponse.value?.success) {
           const userData = userResponse.value.user
           setUser(userData)
-          if (userResponse.value.achievements) {
-            setAchievements(userResponse.value.achievements)
-          }
           console.log('User profile loaded successfully:', userData.full_name)
         } else {
           console.log('User profile fetch failed, using fallback data')
@@ -316,23 +302,6 @@ export default function Dashboard() {
     }
   }
 
-  const getAchievementIcon = (icon: string) => {
-    const iconMap: { [key: string]: string } = {
-      gift: 'ri-gift-line',
-      leaf: 'ri-leaf-line',
-      trophy: 'ri-trophy-line',
-      crown: 'ri-vip-crown-line',
-      heart: 'ri-heart-line',
-      star: 'ri-star-line',
-      cloud: 'ri-cloud-line',
-      shield: 'ri-shield-line',
-      smartphone: 'ri-smartphone-line',
-      recycle: 'ri-recycle-line',
-      target: 'ri-target-line'
-    }
-    return iconMap[icon] || 'ri-award-line'
-  }
-
   
 
   if (loading) {
@@ -359,9 +328,6 @@ export default function Dashboard() {
     )
   }
 
-  const earnedAchievements = achievements.filter(a => a.earned)
-  const progressAchievements = achievements.filter(a => !a.earned)
-
   return (
   <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
@@ -369,19 +335,7 @@ export default function Dashboard() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-              <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Eco Points</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-green-600">{user.eco_points || 0}</p>
-                  </div>
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-leaf-line text-green-600 text-lg sm:text-xl"></i>
-                  </div>
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border">
                 <div className="flex items-center justify-between">
                   <div>
@@ -399,7 +353,7 @@ export default function Dashboard() {
               <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Donations</p>
+                    <p className="text-sm font-medium text-gray-600">Total Submissions</p>
                     <p className="text-2xl sm:text-3xl font-bold text-purple-600">{user.total_donations || 0}</p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -463,12 +417,8 @@ export default function Dashboard() {
                           <div className="text-right mt-2 sm:mt-0">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                               <div className="text-xs sm:text-sm">
-                                {/* Only show points if donation is reallocated/donated */}
                                 {(device.status === 'reallocated' || device.status === 'donated') ? (
-                                  <span className="text-green-600 font-medium">+{device.eco_points_earned} points</span>
-                                ) : null}
-                                {(device.status === 'reallocated' || device.status === 'donated') ? (
-                                  <span className="text-gray-500 ml-2">• {Number(device.co2_saved || 0).toFixed(2)}kg CO₂</span>
+                                  <span className="text-gray-500">{Number(device.co2_saved || 0).toFixed(2)}kg CO₂ saved</span>
                                 ) : null}
                               </div>
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(device.status)}`}> 
@@ -507,8 +457,7 @@ export default function Dashboard() {
                           <div className="text-right mt-2 sm:mt-0">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                               <div className="text-xs sm:text-sm">
-                                <span className="text-blue-600 font-medium">+{device.eco_points_earned} points</span>
-                                <span className="text-gray-500 ml-2">• {Number(device.co2_saved || 0).toFixed(2)}kg CO₂</span>
+                                <span className="text-gray-500">{Number(device.co2_saved || 0).toFixed(2)}kg CO₂ saved</span>
                               </div>
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(device.status)}`}> 
                                 {device.status}
@@ -531,126 +480,11 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Achievements */}
-            <div className="bg-white rounded-xl shadow-sm border">
-              <div className="p-4 sm:p-6 border-b">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Achievements</h2>
-                <p className="text-gray-600 mt-1">Your environmental milestones</p>
-              </div>
-              <div className="p-4 sm:p-6">
-                {/* Earned Achievements */}
-                {earnedAchievements.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-4">Earned ({earnedAchievements.length})</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {earnedAchievements.map((achievement) => (
-                        <div key={achievement.id} className="flex items-center space-x-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i className={`${getAchievementIcon(achievement.icon)} text-green-600 text-lg sm:text-xl`}></i>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900 text-sm sm:text-base">{achievement.title}</h4>
-                            <p className="text-xs sm:text-sm text-gray-600">{achievement.description}</p>
-                          </div>
-                          <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full flex items-center justify-center">
-                            <i className="ri-check-line text-white text-xs sm:text-sm"></i>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
 
-                {/* Progress Achievements */}
-                {progressAchievements.length > 0 && (
-                  <div>
-                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-4">In Progress</h3>
-                    <div className="space-y-4">
-                      {progressAchievements.map((achievement) => (
-                        <div key={achievement.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg border">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <i className={`${getAchievementIcon(achievement.icon)} text-gray-600 text-lg sm:text-xl`}></i>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900 text-sm sm:text-base">{achievement.title}</h4>
-                            <p className="text-xs sm:text-sm text-gray-600">{achievement.description}</p>
-                            <div className="mt-2">
-                              <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 mb-1">
-                                <span>Progress</span>
-                                <span>{achievement.progress}%</span>
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div 
-                                  className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                                  style={{ width: `${achievement.progress}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {achievements.length === 0 && (
-                  <div className="text-center py-8">
-                    <i className="ri-trophy-line text-3xl sm:text-4xl text-gray-300 mb-4"></i>
-                    <p className="text-gray-500">Start donating to earn achievements!</p>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-4 sm:space-y-6">
-            {/* Top Contributors */}
-            <div className="bg-white rounded-xl shadow-sm border">
-              <div className="p-4 sm:p-6 border-b">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Top Contributors</h3>
-                <p className="text-gray-600 text-xs sm:text-sm mt-1">Community leaderboard</p>
-              </div>
-              <div className="p-4 sm:p-6">
-                {leaderboard.length > 0 ? (
-                  <div className="space-y-4">
-                    {leaderboard.slice(0, 5).map((contributor) => (
-                      <div
-                        key={contributor.id}
-                        className="flex items-center space-x-3 hover:bg-green-50 p-2 rounded-lg transition-colors"
-                      >
-                        <div className="flex-shrink-0">
-                          <span className="w-5 h-5 sm:w-6 sm:h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium">
-                            {contributor.rank}
-                          </span>
-                        </div>
-                        {contributor.profile_image_url ? (
-                          <img 
-                            src={contributor.profile_image_url} 
-                            alt={contributor.name}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                            <i className="ri-user-line text-gray-600 text-xs sm:text-sm"></i>
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{contributor.name}</p>
-                          <p className="text-xs text-gray-500">{contributor.eco_points} points</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-4">
-                    <i className="ri-trophy-line text-xl sm:text-2xl text-gray-300 mb-2"></i>
-                    <p className="text-gray-500 text-xs sm:text-sm">No contributors yet</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Quick Actions */}
             <div className="bg-white rounded-xl shadow-sm border">
               <div className="p-4 sm:p-6 border-b">

@@ -155,7 +155,6 @@ export default function ProfileDropdown({ user, onLogout, refreshTrigger }: Prof
         </div>
         <div className="hidden md:block text-left">
           <p suppressHydrationWarning className="text-sm font-medium text-gray-900">{mounted ? getUserDisplayName() : ''}</p>
-          <p suppressHydrationWarning className="text-xs text-gray-500">{mounted ? `${currentUser?.eco_points || 0} points` : ''}</p>
         </div>
         <i className={`ri-arrow-down-s-line text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}></i>
       </button>
@@ -188,30 +187,13 @@ export default function ProfileDropdown({ user, onLogout, refreshTrigger }: Prof
               <div className="flex-1 min-w-0">
                 <p suppressHydrationWarning className="font-semibold text-gray-900 truncate">{mounted ? getUserDisplayName() : ''}</p>
                 <p suppressHydrationWarning className="text-sm text-gray-600 truncate">{mounted ? currentUser?.email : ''}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Level {Math.floor((currentUser?.eco_points || 0) / 100) + 1}
-                  </span>
-                  {isLoading && (
-                    <span className="text-xs text-gray-500">Updating...</span>
-                  )}
-                </div>
               </div>
             </div>
           </div>
 
           {/* Real Stats Grid */}
           <div className="px-6 py-4 border-b border-gray-100">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <i className="ri-trophy-line text-green-500 text-sm"></i>
-                  <p className="text-lg font-bold text-green-600">
-                    {isLoading ? '...' : (currentUser?.eco_points || 0)}
-                  </p>
-                </div>
-                <p className="text-xs text-gray-500">Eco Points</p>
-              </div>
+            <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <i className="ri-leaf-line text-emerald-500 text-sm"></i>

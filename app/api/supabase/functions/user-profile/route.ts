@@ -263,12 +263,9 @@ export async function POST(request: NextRequest) {
           has_department: !!userData.department
         })
 
-        const achievements = generateAchievements(userData)
-
         const responseData = {
           success: true,
-          user: userData,
-          achievements: achievements
+          user: userData
         }
 
         // Cache the response
@@ -649,109 +646,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function generateAchievements(userStats: any) {
-  const achievements = []
-  
-  achievements.push({
-    id: 'first-donation',
-    title: 'First Steps',
-    description: 'Made your first donation',
-    icon: 'gift',
-    earned: (userStats.total_donations || 0) >= 1,
-    progress: (userStats.total_donations || 0) >= 1 ? 100 : 0,
-    category: 'donation'
-  })
-
-  achievements.push({
-    id: 'eco-warrior',
-    title: 'Eco Warrior',
-    description: 'Earned 100 eco points',
-    icon: 'leaf',
-    earned: (userStats.eco_points || 0) >= 100,
-    progress: Math.min(((userStats.eco_points || 0) / 100) * 100, 100),
-    category: 'points'
-  })
-
-  achievements.push({
-    id: 'eco-champion',
-    title: 'Eco Champion',
-    description: 'Earned 500 eco points',
-    icon: 'trophy',
-    earned: (userStats.eco_points || 0) >= 500,
-    progress: Math.min(((userStats.eco_points || 0) / 500) * 100, 100),
-    category: 'points'
-  })
-
-  achievements.push({
-    id: 'generous-giver',
-    title: 'Generous Giver',
-    description: 'Made 5 donations',
-    icon: 'heart',
-    earned: (userStats.total_donations || 0) >= 5,
-    progress: Math.min(((userStats.total_donations || 0) / 5) * 100, 100),
-    category: 'donation'
-  })
-
-  achievements.push({
-    id: 'donation-hero',
-    title: 'Donation Hero',
-    description: 'Made 10 donations',
-    icon: 'crown',
-    earned: (userStats.total_donations || 0) >= 10,
-    progress: Math.min(((userStats.total_donations || 0) / 10) * 100, 100),
-    category: 'donation'
-  })
-
-  achievements.push({
-    id: 'carbon-saver',
-    title: 'Carbon Saver',
-    description: 'Saved 50kg of CO₂',
-    icon: 'cloud',
-    earned: (userStats.total_co2_saved || 0) >= 50,
-    progress: Math.min(((userStats.total_co2_saved || 0) / 50) * 100, 100),
-    category: 'environment'
-  })
-
-  // New fun achievements
-  achievements.push({
-    id: 'social-butterfly',
-    title: 'Social Butterfly',
-    description: 'Visited 10 public profiles',
-    icon: 'user',
-    earned: (userStats.visited_profiles || 0) >= 10,
-    progress: Math.min(((userStats.visited_profiles || 0) / 10) * 100, 100),
-    category: 'social'
-  })
-
-  achievements.push({
-    id: 'community-star',
-    title: 'Community Star',
-    description: 'Received 20 likes on posts',
-    icon: 'star',
-    earned: (userStats.post_likes || 0) >= 20,
-    progress: Math.min(((userStats.post_likes || 0) / 20) * 100, 100),
-    category: 'social'
-  })
-
-  achievements.push({
-    id: 'trendsetter',
-    title: 'Trendsetter',
-    description: 'Posted 5 times in trending topics',
-    icon: 'fire',
-    earned: (userStats.trending_posts || 0) >= 5,
-    progress: Math.min(((userStats.trending_posts || 0) / 5) * 100, 100),
-    category: 'social'
-  })
-
-  achievements.push({
-    id: 'mobile-master',
-    title: 'Mobile Master',
-    description: 'Logged in from mobile 20 times',
-    icon: 'smartphone',
-    earned: (userStats.mobile_logins || 0) >= 20,
-    progress: Math.min(((userStats.mobile_logins || 0) / 20) * 100, 100),
-    category: 'mobile'
-  })
-
-  return achievements
-}

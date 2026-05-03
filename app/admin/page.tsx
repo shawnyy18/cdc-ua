@@ -7,6 +7,7 @@ import RefreshButton from '@/components/Admin/RefreshButton'
 import InventoryByCategory from '@/components/Admin/InventoryByCategory'
 import { supabase } from '@/lib/supabase'
 import { checkAdminAccess } from '@/lib/adminAuth'
+import { DownloadFormsDropdown } from '@/components/Admin/CDCDashboard'
 
 /* ─── Types ─── */
 type DonationRequest = {
@@ -483,6 +484,7 @@ export default function AdminDashboard() {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [filter, setFilter] = useState<StatusKey>('all')
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [adminDepartment, setAdminDepartment] = useState<string | null>(null)
   const [departmentName, setDepartmentName] = useState<string>('')
   const [processTarget, setProcessTarget] = useState<DonationRequest | null>(null)
@@ -652,7 +654,19 @@ export default function AdminDashboard() {
     voided: requests.filter(r => r.status === 'voided').length,
   }
 
-  const filtered = requests.filter(r => filter === 'all' || r.status === filter)
+  const filtered = requests.filter(r => {
+    const matchesStatus = filter === 'all' || r.status === filter
+    if (!matchesStatus) return false
+    if (!searchQuery.trim()) return true
+    const q = searchQuery.toLowerCase().trim()
+    const userDept = r.users?.barangays
+    const deptName = userDept ? (Array.isArray(userDept) ? userDept[0]?.name : userDept?.name) : ''
+    return [
+      r.property_number,
+      r.serial_number,
+      deptName,
+    ].some(field => field?.toLowerCase().includes(q))
+  })
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -699,32 +713,62 @@ export default function AdminDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Stats Cards */}
+        {/* Stats Cards — Clickable Filters */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+          <button
+            onClick={() => { setFilter('all'); setSearchQuery('') }}
+            className={`bg-white rounded-xl p-4 border shadow-sm text-left transition-all hover:shadow-md ${
+              filter === 'all' ? 'ring-2 ring-green-500 border-green-300' : 'border-gray-200 hover:border-gray-300'
+            }`}
+          >
             <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</div>
             <div className="mt-1 text-2xl font-bold text-gray-900">{stats.total}</div>
-          </div>
-          <div className="bg-white rounded-xl p-4 border border-amber-200 shadow-sm">
+          </button>
+          <button
+            onClick={() => setFilter('pending_evaluation')}
+            className={`bg-white rounded-xl p-4 border shadow-sm text-left transition-all hover:shadow-md ${
+              filter === 'pending_evaluation' ? 'ring-2 ring-amber-500 border-amber-300' : 'border-amber-200 hover:border-amber-300'
+            }`}
+          >
             <div className="text-xs font-medium text-amber-600 uppercase tracking-wide">Pending</div>
             <div className="mt-1 text-2xl font-bold text-amber-700">{stats.pending_evaluation}</div>
-          </div>
-          <div className="bg-white rounded-xl p-4 border border-blue-200 shadow-sm">
+          </button>
+          <button
+            onClick={() => setFilter('reallocated')}
+            className={`bg-white rounded-xl p-4 border shadow-sm text-left transition-all hover:shadow-md ${
+              filter === 'reallocated' ? 'ring-2 ring-blue-500 border-blue-300' : 'border-blue-200 hover:border-blue-300'
+            }`}
+          >
             <div className="text-xs font-medium text-blue-600 uppercase tracking-wide">Reallocated</div>
             <div className="mt-1 text-2xl font-bold text-blue-700">{stats.reallocated}</div>
-          </div>
-          <div className="bg-white rounded-xl p-4 border border-green-200 shadow-sm">
+          </button>
+          <button
+            onClick={() => setFilter('donated')}
+            className={`bg-white rounded-xl p-4 border shadow-sm text-left transition-all hover:shadow-md ${
+              filter === 'donated' ? 'ring-2 ring-green-500 border-green-300' : 'border-green-200 hover:border-green-300'
+            }`}
+          >
             <div className="text-xs font-medium text-green-600 uppercase tracking-wide">Donated</div>
             <div className="mt-1 text-2xl font-bold text-green-700">{stats.donated}</div>
-          </div>
-          <div className="bg-white rounded-xl p-4 border border-slate-300 shadow-sm">
+          </button>
+          <button
+            onClick={() => setFilter('disposed')}
+            className={`bg-white rounded-xl p-4 border shadow-sm text-left transition-all hover:shadow-md ${
+              filter === 'disposed' ? 'ring-2 ring-slate-500 border-slate-400' : 'border-slate-300 hover:border-slate-400'
+            }`}
+          >
             <div className="text-xs font-medium text-slate-600 uppercase tracking-wide">Disposed</div>
             <div className="mt-1 text-2xl font-bold text-slate-700">{stats.disposed}</div>
-          </div>
-          <div className="bg-white rounded-xl p-4 border border-red-200 shadow-sm">
+          </button>
+          <button
+            onClick={() => setFilter('voided')}
+            className={`bg-white rounded-xl p-4 border shadow-sm text-left transition-all hover:shadow-md ${
+              filter === 'voided' ? 'ring-2 ring-red-500 border-red-300' : 'border-red-200 hover:border-red-300'
+            }`}
+          >
             <div className="text-xs font-medium text-red-600 uppercase tracking-wide">Voided</div>
             <div className="mt-1 text-2xl font-bold text-red-700">{stats.voided}</div>
-          </div>
+          </button>
         </div>
 
         {/* Inventory Section */}
@@ -734,23 +778,65 @@ export default function AdminDashboard() {
 
         {/* Asset Submissions Table */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h2 className="text-lg font-bold text-gray-900">Asset Submissions</h2>
-            <div className="flex flex-wrap sm:flex-nowrap gap-1.5 overflow-x-auto pb-1">
-              {(['all', 'pending_evaluation', 'reallocated', 'donated', 'disposed', 'voided'] as const).map(s => (
-                <button
-                  key={s}
-                  onClick={() => setFilter(s)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize whitespace-nowrap transition-colors ${
-                    filter === s
-                      ? 'bg-green-600 text-white shadow-sm'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {s === 'all' ? 'All' : STATUS_CONFIG[s]?.label || s}
-                </button>
-              ))}
+          <div className="px-5 py-4 border-b border-gray-200 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <h2 className="text-lg font-bold text-gray-900">Asset Submissions</h2>
+              <div className="flex flex-wrap sm:flex-nowrap gap-1.5 overflow-x-auto pb-1">
+                {(['all', 'pending_evaluation', 'reallocated', 'donated', 'disposed', 'voided'] as const).map(s => (
+                  <button
+                    key={s}
+                    onClick={() => setFilter(s)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize whitespace-nowrap transition-colors ${
+                      filter === s
+                        ? 'bg-green-600 text-white shadow-sm'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {s === 'all' ? 'All' : STATUS_CONFIG[s]?.label || s}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Search Bar */}
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i className="ri-search-line text-gray-400"></i>
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search by property #, serial #, or department..."
+                className="w-full pl-9 pr-10 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <i className="ri-close-circle-fill text-lg"></i>
+                </button>
+              )}
+            </div>
+
+            {/* Active filter indicator */}
+            {(filter !== 'all' || searchQuery) && (
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <i className="ri-filter-3-line"></i>
+                <span>
+                  Showing {filtered.length} result{filtered.length !== 1 ? 's' : ''}
+                  {filter !== 'all' && <> in <strong className="text-gray-700">{STATUS_CONFIG[filter]?.label || filter}</strong></>}
+                  {searchQuery && <> matching <strong className="text-gray-700">&ldquo;{searchQuery}&rdquo;</strong></>}
+                </span>
+                <button
+                  onClick={() => { setFilter('all'); setSearchQuery('') }}
+                  className="ml-1 px-2 py-0.5 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium transition-colors"
+                >
+                  Clear all
+                </button>
+              </div>
+            )}
           </div>
 
           {isLoading ? (
@@ -868,13 +954,18 @@ export default function AdminDashboard() {
                             Process Asset
                           </button>
                         ) : (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setProcessTarget(r); }}
-                            className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all"
-                          >
-                            <i className="ri-file-info-line"></i>
-                            View Details
-                          </button>
+                          <div className="flex gap-2 w-full">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setProcessTarget(r); }}
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all"
+                            >
+                              <i className="ri-file-info-line"></i>
+                              View Details
+                            </button>
+                            <div onClick={e => e.stopPropagation()}>
+                              <DownloadFormsDropdown onToast={(msg, type) => setToast({ message: msg, type })} />
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -971,13 +1062,18 @@ export default function AdminDashboard() {
                                   Process Asset
                                 </button>
                               ) : (
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); setProcessTarget(r); }}
-                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all"
-                                >
-                                  <i className="ri-file-info-line"></i>
-                                  View Details
-                                </button>
+                                <div className="inline-flex items-center gap-1.5">
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setProcessTarget(r); }}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all"
+                                  >
+                                    <i className="ri-file-info-line"></i>
+                                    Details
+                                  </button>
+                                  <div onClick={e => e.stopPropagation()}>
+                                    <DownloadFormsDropdown onToast={(msg, type) => setToast({ message: msg, type })} />
+                                  </div>
+                                </div>
                               )}
                             </td>
                           </tr>

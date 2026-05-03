@@ -38,10 +38,9 @@ EcoKonek PH helps Filipinos responsibly dispose of old electronics while earning
 5. View donation history and status (pending/accepted/rejected)
 
 💚 KEY FEATURES:
-• Dashboard - View eco stats, donations, achievements, leaderboard
+• Dashboard - View eco stats, donations, leaderboard
 • Donate Page - Submit device donations (3-step form)
-• Community - Share eco-tips, connect with users, marketplace
-• Profile - Manage account, view donation history, follower counts
+• Profile - Manage account, view donation history
 • Marketplace - Buy/sell refurbished devices (for verified sellers)
 • Eco-Points - Rewards for donations, displayed on leaderboard
 
@@ -49,17 +48,13 @@ EcoKonek PH helps Filipinos responsibly dispose of old electronics while earning
 • Earn eco-points for each accepted donation
 • Track total CO₂ saved from recycling
 • Compete on public leaderboard
-• Unlock achievements for milestones
-• Follow other eco-warriors
 
 📍 COLLECTION POINTS (CDC):
 • CDC IT Department (Clark Freeport Zone)
 • Additional collection points available in the submission form
 
 🔒 PRIVACY:
-• Users can set profiles to public/private
-• Follow/unfollow other users
-• View follower/following counts
+• Users can manage their account securely
 
 ⚠️ IMPORTANT RULES:
 • Only electronics accepted (no general trash)
@@ -72,7 +67,7 @@ RESPONSE STYLE:
 • Use Filipino context when relevant
 • Keep answers concise (2-3 sentences) unless detailed info requested
 • Use emojis occasionally for engagement
-• Focus on environmental impact and community building
+• Focus on environmental impact
 
 `
 
@@ -152,13 +147,13 @@ RESPONSE STYLE:
       if (includes('donate') || includes('donation')) {
         text = 'You can donate your device on the Donate page. Choose the device type, condition, and a drop-off center in Pampanga, then submit. You’ll earn eco-points once the donation is accepted.'
       } else if (includes('eco') && (includes('point') || includes('reward'))) {
-        text = 'Eco-points are rewards for accepted donations. They add to your total on the Dashboard and Leaderboard. More accepted donations = more points and achievements.'
+        text = 'Eco-points are rewards for accepted donations. They add to your total on the Dashboard and Leaderboard. More accepted donations = more points.'
       } else if (includes('drop-off') || includes('center') || includes('where')) {
         text = 'Submit your device at the CDC IT Department collection point in Clark Freeport Zone. More collection points may be available in the submission form.'
       } else if (includes('status') || includes('pending') || includes('evaluation') || includes('disposed')) {
         text = 'After submission, your asset goes through evaluation. Possible statuses: Pending Evaluation, Reallocated (reassigned within CDC), Donated (external), Disposed (e-waste), or Voided. Track it in your Dashboard.'
-      } else if (includes('profile') || includes('follow') || includes('followers')) {
-        text = 'Profiles can be public or private. You can follow other eco-warriors to connect; follower and following counts appear on profiles.'
+      } else if (includes('profile')) {
+        text = 'You can manage your account and view your donation history on your Profile page.'
       } else if (includes('market') || includes('sell') || includes('refurb')) {
         text = 'Verified sellers can list refurbished devices in the Marketplace. Buyers can browse safely through the platform.'
       } else if (includes('co2') || includes('carbon')) {

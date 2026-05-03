@@ -176,6 +176,111 @@ function DeleteModal({
   )
 }
 
+/* ─── Download Forms Dropdown ─── */
+export function DownloadFormsDropdown({
+  onToast,
+}: {
+  onToast: (msg: string, type: 'success' | 'error' | 'info') => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [downloading, setDownloading] = useState<string | null>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    if (open) document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [open])
+
+  async function handleDownload(formKey: string, label: string) {
+    setDownloading(formKey)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token
+      if (!token) throw new Error('Not authenticated')
+
+      const res = await fetch(`/api/admin/download-form?form=${formKey}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Download failed' }))
+        throw new Error(err.error || `Download failed (${res.status})`)
+      }
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      // Extract filename from Content-Disposition or use a default
+      const disposition = res.headers.get('Content-Disposition')
+      const filenameMatch = disposition?.match(/filename="(.+?)"/) 
+      link.download = filenameMatch?.[1] || `${formKey}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+      onToast(`${label} downloaded successfully.`, 'success')
+    } catch (err: any) {
+      onToast(err.message || 'Failed to download form.', 'error')
+    } finally {
+      setDownloading(null)
+      setOpen(false)
+    }
+  }
+
+  const forms = [
+    { key: 'waste_material_report', label: 'Waste Material Report', icon: 'ri-file-text-line' },
+    { key: 'request_for_entry_to_cdc_warehouse', label: 'Request for Entry to CDC Warehouse', icon: 'ri-building-2-line' },
+  ]
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+        title="Download accountability forms"
+      >
+        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Forms
+        <svg className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute right-0 mt-1 w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-20 py-1 animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="px-3 py-2 border-b border-gray-100">
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Accountability Forms</p>
+          </div>
+          {forms.map(form => (
+            <button
+              key={form.key}
+              onClick={() => handleDownload(form.key, form.label)}
+              disabled={downloading === form.key}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-wait transition-colors"
+            >
+              {downloading === form.key ? (
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin flex-shrink-0" />
+              ) : (
+                <i className={`${form.icon} text-gray-400 flex-shrink-0`}></i>
+              )}
+              <span className="truncate">{form.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ─── Process Asset Modal ─── */
 function ProcessAssetModal({
   asset,
@@ -782,6 +887,11 @@ export default function CDCDashboard() {
                                 <i className="ri-clipboard-line"></i>
                                 Process
                               </button>
+                            )}
+                            {asset.status !== 'pending_evaluation' && (
+                              <DownloadFormsDropdown
+                                onToast={(msg, type) => setToast({ message: msg, type })}
+                              />
                             )}
                             <button
                               onClick={() => setDeleteTarget(asset)}

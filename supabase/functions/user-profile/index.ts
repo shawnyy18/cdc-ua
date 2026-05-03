@@ -97,92 +97,6 @@ const getAuthenticatedUser = async (supabaseClient: any, req: Request) => {
   }
 }
 
-const generateAchievements = (userStats: any) => {
-  const achievements = []
-  
-  achievements.push({
-    id: 'first-donation',
-    title: 'First Steps',
-    description: 'Made your first donation',
-    icon: 'gift',
-    earned: (userStats.total_donations || 0) >= 1,
-    progress: (userStats.total_donations || 0) >= 1 ? 100 : 0,
-    category: 'donation'
-  })
-
-  achievements.push({
-    id: 'eco-warrior',
-    title: 'Eco Warrior',
-    description: 'Earned 100 eco points',
-    icon: 'leaf',
-    earned: (userStats.eco_points || 0) >= 100,
-    progress: Math.min(((userStats.eco_points || 0) / 100) * 100, 100),
-    category: 'points'
-  })
-
-  achievements.push({
-    id: 'eco-champion',
-    title: 'Eco Champion',
-    description: 'Earned 500 eco points',
-    icon: 'trophy',
-    earned: (userStats.eco_points || 0) >= 500,
-    progress: Math.min(((userStats.eco_points || 0) / 500) * 100, 100),
-    category: 'points'
-  })
-
-  achievements.push({
-    id: 'generous-giver',
-    title: 'Generous Giver',
-    description: 'Made 5 donations',
-    icon: 'heart',
-    earned: (userStats.total_donations || 0) >= 5,
-    progress: Math.min(((userStats.total_donations || 0) / 5) * 100, 100),
-    category: 'donation'
-  })
-
-  achievements.push({
-    id: 'donation-hero',
-    title: 'Donation Hero',
-    description: 'Made 10 donations',
-    icon: 'crown',
-    earned: (userStats.total_donations || 0) >= 10,
-    progress: Math.min(((userStats.total_donations || 0) / 10) * 100, 100),
-    category: 'donation'
-  })
-
-  achievements.push({
-    id: 'carbon-saver',
-    title: 'Carbon Saver',
-    description: 'Saved 50kg of CO₂',
-    icon: 'cloud',
-    earned: (userStats.total_co2_saved || 0) >= 50,
-    progress: Math.min(((userStats.total_co2_saved || 0) / 50) * 100, 100),
-    category: 'environment'
-  })
-
-  achievements.push({
-    id: 'climate-protector',
-    title: 'Climate Protector',
-    description: 'Saved 100kg of CO₂',
-    icon: 'shield',
-    earned: (userStats.total_co2_saved || 0) >= 100,
-    progress: Math.min(((userStats.total_co2_saved || 0) / 100) * 100, 100),
-    category: 'environment'
-  })
-
-  achievements.push({
-    id: 'tech-recycler',
-    title: 'Tech Recycler',
-    description: 'Recycled broken devices',
-    icon: 'recycle',
-    earned: (userStats.recycled_devices || 0) >= 1,
-    progress: (userStats.recycled_devices || 0) >= 1 ? 100 : 0,
-    category: 'device'
-  })
-
-  return achievements
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -265,8 +179,7 @@ serve(async (req) => {
                 return new Response(
                   JSON.stringify({
                     success: true,
-                    user: userData,
-                    achievements: generateAchievements(userData)
+                    user: userData
                   }),
                   { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
                 )
@@ -307,13 +220,10 @@ serve(async (req) => {
             updated_at: userProfile.updated_at || new Date().toISOString()
           }
 
-          const achievements = generateAchievements(userData)
-
           return new Response(
             JSON.stringify({
               success: true,
-              user: userData,
-              achievements: achievements
+              user: userData
             }),
             { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )

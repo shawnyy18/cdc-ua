@@ -674,18 +674,6 @@ export default function ProfilePage() {
                         ))}
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Public Profile</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={editForm.is_public}
-                          onChange={e => setEditForm(prev => ({ ...prev, is_public: e.target.checked }))}
-                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                        />
-                        <span className="text-sm text-gray-700">Show my profile on the community page</span>
-                      </div>
-                    </div>
                     <button
                       onClick={handleSaveProfile}
                       className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors whitespace-nowrap cursor-pointer"
@@ -758,15 +746,6 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                      <i className="ri-leaf-line text-green-600"></i>
-                    </div>
-                    <span className="text-gray-700">Eco Points</span>
-                  </div>
-                  <span className="font-semibold text-green-600">{user.eco_points}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                       <i className="ri-recycle-line text-blue-600"></i>
                     </div>
@@ -828,9 +807,6 @@ export default function ProfilePage() {
                             {donation.device_category} • {donation.condition} condition
                           </p>
                           <div className="flex items-center space-x-4 text-sm">
-                            <span className="text-green-600 font-medium">
-                              +{donation.eco_points_earned} points
-                            </span>
                             <span className="text-emerald-600 font-medium">
                               {donation.co2_saved}kg CO₂ saved
                             </span>
