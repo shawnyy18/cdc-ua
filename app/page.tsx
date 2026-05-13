@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
@@ -144,7 +145,7 @@ export default function Home() {
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
+        <img src="/images/itd-logo.png" alt="Loading" className="w-24 h-24 object-contain animate-pulse" />
       </div>
     );
   }
@@ -165,9 +166,14 @@ export default function Home() {
         <div className="relative container mx-auto px-6 py-20">
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-                <i className="ri-recycle-line text-white text-xl"></i>
-              </div>
+              <Image
+                src="/images/itd-logo.png"
+                alt="ITD Logo"
+                width={48}
+                height={48}
+                className="w-12 h-12 object-contain"
+                priority
+              />
               <h1 className="text-4xl font-bold text-green-600 tracking-wide">EcoKonek</h1>
             </div>
             
@@ -367,9 +373,13 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <i className="ri-recycle-line text-white"></i>
-                </div>
+                <Image
+                  src="/images/itd-logo.png"
+                  alt="ITD Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain brightness-0 invert"
+                />
                 <h4 className="text-xl font-['Pacifico'] text-green-400">EcoKonek</h4>
               </div>
               <p className="text-gray-400">Powering responsible e-waste management for the Clark Development Corporation IT Department.</p>

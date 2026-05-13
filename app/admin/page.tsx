@@ -639,8 +639,8 @@ export default function AdminDashboard() {
   if (isCheckingAuth) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
-        <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-        <p className="text-gray-600">Verifying access...</p>
+        <img src="/images/itd-logo.png" alt="Loading" className="w-24 h-24 object-contain mx-auto mb-3 animate-pulse" />
+        <p className="text-gray-500 text-sm">Verifying access...</p>
       </div>
     </div>
   )
@@ -841,7 +841,7 @@ export default function AdminDashboard() {
 
           {isLoading ? (
             <div className="p-12 text-center">
-              <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+              <img src="/images/itd-logo.png" alt="Loading" className="w-16 h-16 object-contain mx-auto mb-3 animate-pulse" />
               <p className="text-gray-500 text-sm">Loading asset submissions…</p>
             </div>
           ) : filtered.length === 0 ? (

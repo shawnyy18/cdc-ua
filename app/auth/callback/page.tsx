@@ -100,7 +100,7 @@ export default function AuthCallbackPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50">
       <div className="bg-white shadow-lg rounded-2xl p-8 border border-gray-100 text-center">
-        <div className="w-10 h-10 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <img src="/images/itd-logo.png" alt="Loading" className="w-20 h-20 object-contain mx-auto mb-4 animate-pulse" />
         <p className="text-gray-700">{message}</p>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import { redirectIfAdmin } from '@/lib/redirectAdmin'
+import { Download, FileText, Loader2 } from 'lucide-react'
 
 interface UserProfile {
   id: string
@@ -53,6 +54,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'donated' | 'recycled'>('donated')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [downloadingForm, setDownloadingForm] = useState<string | null>(null)
 
   // Use ref to prevent multiple API calls
   const dataFetched = useRef(false)
@@ -277,6 +279,41 @@ export default function Dashboard() {
 
   // ... existing code for getDeviceIcon, getStatusColor, getAchievementIcon, handleLogout ...
 
+  // ── Form Download Handler ──
+  const handleFormDownload = async (formKey: string, label: string) => {
+    setDownloadingForm(formKey)
+    try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('ecokonek_token') : null
+      if (!token) throw new Error('Not authenticated — please log in again.')
+
+      const res = await fetch(`/api/download-form?form=${formKey}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Download failed' }))
+        throw new Error(err.error || `Download failed (${res.status})`)
+      }
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      const disposition = res.headers.get('Content-Disposition')
+      const filenameMatch = disposition?.match(/filename="(.+?)"/) 
+      link.download = filenameMatch?.[1] || `${formKey}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (err: any) {
+      console.error('Form download error:', err)
+      alert(err.message || 'Failed to download form. Please try again.')
+    } finally {
+      setDownloadingForm(null)
+    }
+  }
+
   const getDeviceIcon = (category: string) => {
     const icons: { [key: string]: string } = {
       smartphone: 'ri-smartphone-line',
@@ -308,8 +345,8 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <img src="/images/itd-logo.png" alt="Loading" className="w-24 h-24 object-contain mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-500 text-sm">Loading your dashboard...</p>
         </div>
       </div>
     )
@@ -552,6 +589,50 @@ export default function Dashboard() {
                   </div>
                   <i className="ri-arrow-right-s-line text-gray-400 group-hover:text-purple-500 transition-colors"></i>
                 </Link>
+              </div>
+            </div>
+
+            {/* Standard Forms & Resources */}
+            <div className="bg-white rounded-xl shadow-sm border">
+              <div className="p-4 sm:p-6 border-b">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">Standard Forms</h3>
+                    <p className="text-xs text-gray-500">Accountability templates</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 sm:p-6 space-y-3">
+                {/* Waste Material Report */}
+                <button
+                  id="download-waste-material-report"
+                  onClick={() => handleFormDownload('waste_material_report', 'Waste Material Report')}
+                  disabled={downloadingForm === 'waste_material_report'}
+                  className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-emerald-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-emerald-200 hover:shadow-sm w-full text-left disabled:opacity-60 disabled:cursor-wait"
+                >
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
+                    {downloadingForm === 'waste_material_report' ? (
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 animate-spin" />
+                    ) : (
+                      <i className="ri-file-text-line text-emerald-600 text-base sm:text-lg"></i>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900 text-xs sm:text-sm">Waste Material Report</p>
+                    <p className="text-xs text-gray-500 truncate">CDC accountability form (PDF)</p>
+                  </div>
+                  <Download className="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transition-colors flex-shrink-0" />
+                </button>
+
+
+                <div className="pt-2 border-t border-gray-100">
+                  <p className="text-[10px] text-gray-400 leading-relaxed">
+                    These are standard CDC accountability form templates. Download, fill out, and submit to your IT Admin.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

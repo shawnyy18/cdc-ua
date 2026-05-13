@@ -22,11 +22,11 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // 2. Verify the requesting user is an authenticated admin
+    // 2. Verify the requesting user is authenticated (any authenticated user)
     const authHeader = req.headers.get('authorization')
     if (!authHeader) {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
+        { success: false, error: 'Unauthorized — please log in to download forms.' },
         { status: 401 }
       )
     }
@@ -43,21 +43,7 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Check admin access
-    const { data: userData } = await supabaseAdmin
-      .from('users')
-      .select('id, is_admin')
-      .eq('id', user.id)
-      .single()
-
-    if (!userData?.is_admin) {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
-        { status: 403 }
-      )
-    }
-
-    // 3. Download the file from storage
+    // 3. Download the file from storage (using service role — bypasses RLS)
     const fileName = ALLOWED_FORMS[formKey]
     const { data: fileData, error: downloadError } = await supabaseAdmin
       .storage
@@ -69,7 +55,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: `Form template "${fileName}" has not been uploaded yet. Please upload it via the Supabase Dashboard > Storage > accountability_forms.`
+          error: `Form template "${fileName}" is not available yet. Please contact your IT Admin.`
         },
         { status: 404 }
       )

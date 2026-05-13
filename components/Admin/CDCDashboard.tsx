@@ -236,7 +236,6 @@ export function DownloadFormsDropdown({
 
   const forms = [
     { key: 'waste_material_report', label: 'Waste Material Report', icon: 'ri-file-text-line' },
-    { key: 'request_for_entry_to_cdc_warehouse', label: 'Request for Entry to CDC Warehouse', icon: 'ri-building-2-line' },
   ]
 
   return (

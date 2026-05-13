@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import ProfileDropdown from './ProfileDropdown'
@@ -60,9 +61,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white flex items-center justify-center shadow-sm">
-                <i className="ri-recycle-line text-base"></i>
-              </div>
+              <Image
+                src="/images/itd-logo.png"
+                alt="ITD Logo"
+                width={40}
+                height={40}
+                className="h-10 w-10 object-contain"
+                priority
+              />
               <span className="font-semibold text-gray-900">EcoKonek</span>
             </Link>
           </div>
@@ -120,9 +126,13 @@ export default function Navbar() {
           <div className="absolute left-0 top-0 w-64 h-full bg-white shadow-lg p-4" role="dialog" aria-modal="true">
             <div className="flex items-center justify-between mb-6">
               <Link href="/" className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white flex items-center justify-center shadow-sm">
-                  <i className="ri-recycle-line text-base"></i>
-                </div>
+                <Image
+                  src="/images/itd-logo.png"
+                  alt="ITD Logo"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain"
+                />
                 <span className="font-semibold text-gray-900">EcoKonek</span>
               </Link>
               <button onClick={() => setOpen(false)} aria-label="Close menu" className="p-2 rounded text-gray-600 hover:text-green-600">

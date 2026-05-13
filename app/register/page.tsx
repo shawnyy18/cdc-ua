@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -156,9 +157,14 @@ export default function Register() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 mb-6 group">
-            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center group-hover:bg-green-600 transition-colors">
-              <i className="ri-recycle-line text-white text-xl"></i>
-            </div>
+            <Image
+              src="/images/itd-logo.png"
+              alt="ITD Logo"
+              width={48}
+              height={48}
+              className="w-12 h-12 object-contain group-hover:scale-105 transition-transform"
+              priority
+            />
             <h1 className="text-3xl font-bold text-green-600 tracking-wide">EcoKonek</h1>
           </Link>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Create Your Account</h2>

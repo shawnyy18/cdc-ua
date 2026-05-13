@@ -399,8 +399,8 @@ function DonatePageContent() {
   if (!user || !isInitialized) {
     return <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center">
       <div className="text-center">
-        <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading...</p>
+        <img src="/images/itd-logo.png" alt="Loading" className="w-24 h-24 object-contain mx-auto mb-4 animate-pulse" />
+        <p className="text-gray-500 text-sm">Loading...</p>
       </div>
     </div>;
   }
