@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "./dev-server.sh",
+    "dev": "next dev --hostname 0.0.0.0",
     "dev-base": "next dev --hostname 0.0.0.0",
     "dev:lan": "TURBOPACK=0 next dev --hostname 0.0.0.0",
     "build": "next build",
